@@ -18,7 +18,6 @@ private val LightColorPalette = lightColors(
     secondary = Teal200,
 )
 
-
 @Composable
 fun DawnOfAndroidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
