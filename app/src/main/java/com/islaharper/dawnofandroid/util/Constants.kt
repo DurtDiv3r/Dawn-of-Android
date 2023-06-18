@@ -13,4 +13,8 @@ object Constants {
     // PREFS
     const val PREFS_NAME = "app_preferences"
     const val PREFS_ONBOARDING_KEY = "onboarding_complete"
+
+    // OnBoarding
+    const val ONBOARDING_PAGE_COUNT = 3
+    const val ONBOARDING_LAST_PAGE = 2
 }
