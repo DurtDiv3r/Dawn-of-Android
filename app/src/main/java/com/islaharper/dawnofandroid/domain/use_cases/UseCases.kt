@@ -4,10 +4,12 @@ import com.islaharper.dawnofandroid.domain.use_cases.read_onboarding.ReadOnBoard
 import com.islaharper.dawnofandroid.domain.use_cases.read_signed_in_state.ReadSignedInStateUseCase
 import com.islaharper.dawnofandroid.domain.use_cases.save_onboarding.SaveOnBoardingStateUseCase
 import com.islaharper.dawnofandroid.domain.use_cases.save_signed_in_state.SaveSignedInStateUseCase
+import com.islaharper.dawnofandroid.domain.use_cases.verify_token.VerifyTokenUseCase
 
 data class UseCases(
     val saveOnBoardingUseCase: SaveOnBoardingStateUseCase,
     val readOnBoardingUseCase: ReadOnBoardingStateUseCase,
     val saveSignedInStateUseCase: SaveSignedInStateUseCase,
     val readSignedInStateUseCase: ReadSignedInStateUseCase,
+    val verifyTokenUseCase: VerifyTokenUseCase,
 )
