@@ -10,7 +10,9 @@ import com.islaharper.dawnofandroid.data.repository.Repository
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
 import com.islaharper.dawnofandroid.domain.use_cases.UseCases
 import com.islaharper.dawnofandroid.domain.use_cases.read_onboarding.ReadOnBoardingStateUseCase
+import com.islaharper.dawnofandroid.domain.use_cases.read_signed_in_state.ReadSignedInStateUseCase
 import com.islaharper.dawnofandroid.domain.use_cases.save_onboarding.SaveOnBoardingStateUseCase
+import com.islaharper.dawnofandroid.domain.use_cases.save_signed_in_state.SaveSignedInStateUseCase
 import com.islaharper.dawnofandroid.util.Constants.PREFS_NAME
 import dagger.Module
 import dagger.Provides
@@ -45,6 +47,8 @@ object RepositoryModule {
         return UseCases(
             saveOnBoardingUseCase = SaveOnBoardingStateUseCase(repository),
             readOnBoardingUseCase = ReadOnBoardingStateUseCase(repository),
+            saveSignedInStateUseCase = SaveSignedInStateUseCase(repository),
+            readSignedInStateUseCase = ReadSignedInStateUseCase(repository),
         )
     }
 }

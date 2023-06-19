@@ -3,4 +3,9 @@
     <string name="dawn_of_android">Dawn of Android</string>
     <string name="onboarding_page">OnBoarding page</string>
     <string name="finish_button">Finish</string>
+    <string name="socket_error_message">Connection Timeout Exception</string>
+    <string name="connect_error_message">Internet Connection Unavailable</string>
+    <string name="message_bar_icon">Message Bar Icon</string>
+    <string name="successful_sign_in">Successful Sign In</string>
+
 </resources>
