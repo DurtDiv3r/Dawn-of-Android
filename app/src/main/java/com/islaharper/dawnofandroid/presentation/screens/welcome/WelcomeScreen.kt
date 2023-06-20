@@ -1,7 +1,6 @@
 package com.islaharper.dawnofandroid.presentation.screens.welcome
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -87,7 +86,7 @@ fun WelcomeScreen(
         ) {
             welcomeViewModel.saveOnBoardingState(completed = true)
             navHostController.popBackStack()
-            navHostController.navigate(Screen.Login.route)
+            navHostController.navigate(route = Screen.Login.route)
         }
     }
 }
@@ -129,7 +128,7 @@ fun PagerScreen(page: OnBoardingPage) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FinishButton(
     modifier: Modifier = Modifier,
