@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import com.islaharper.dawnofandroid.presentation.screens.splash.SplashScreen
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun DawnNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,
