@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -46,7 +48,11 @@ fun SplashScreen(
             }
         }
     }
+    Splash(composition, progress)
+}
 
+@Composable
+private fun Splash(composition: LottieComposition?, progress: Float) {
     Box(modifier = Modifier.fillMaxSize()) {
         LottieAnimation(composition = composition, progress = progress)
         Column(
@@ -63,4 +69,12 @@ fun SplashScreen(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun SplashPreview() {
+    val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.jetpack))
+    val progress by animateLottieCompositionAsState(composition = composition)
+    Splash(composition, progress)
 }
