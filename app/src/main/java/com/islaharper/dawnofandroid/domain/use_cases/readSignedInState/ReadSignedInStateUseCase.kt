@@ -1,4 +1,4 @@
-package com.islaharper.dawnofandroid.domain.use_cases.read_signed_in_state
+package com.islaharper.dawnofandroid.domain.use_cases.readSignedInState
 
 import com.islaharper.dawnofandroid.data.repository.Repository
 import kotlinx.coroutines.flow.Flow

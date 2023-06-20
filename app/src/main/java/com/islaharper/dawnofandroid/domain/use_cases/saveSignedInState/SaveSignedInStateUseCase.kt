@@ -1,4 +1,4 @@
-package com.islaharper.dawnofandroid.domain.use_cases.save_signed_in_state
+package com.islaharper.dawnofandroid.domain.use_cases.saveSignedInState
 
 import com.islaharper.dawnofandroid.data.repository.Repository
 
