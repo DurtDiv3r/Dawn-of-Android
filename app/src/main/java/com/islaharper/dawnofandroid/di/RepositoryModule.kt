@@ -8,9 +8,9 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.islaharper.dawnofandroid.data.repository.DataStoreOperationsImpl
 import com.islaharper.dawnofandroid.data.repository.Repository
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
-import com.islaharper.dawnofandroid.domain.use_cases.UseCases
-import com.islaharper.dawnofandroid.domain.use_cases.read_onboarding.ReadOnBoardingStateUseCase
-import com.islaharper.dawnofandroid.domain.use_cases.save_onboarding.SaveOnBoardingStateUseCase
+import com.islaharper.dawnofandroid.domain.useCases.UseCases
+import com.islaharper.dawnofandroid.domain.useCases.readOnboarding.ReadOnBoardingStateUseCase
+import com.islaharper.dawnofandroid.domain.useCases.saveOnboarding.SaveOnBoardingStateUseCase
 import com.islaharper.dawnofandroid.util.Constants.PREFS_NAME
 import dagger.Module
 import dagger.Provides

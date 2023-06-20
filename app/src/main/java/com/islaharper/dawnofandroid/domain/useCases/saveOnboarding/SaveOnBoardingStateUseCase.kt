@@ -1,4 +1,4 @@
-package com.islaharper.dawnofandroid.domain.use_cases.save_onboarding
+package com.islaharper.dawnofandroid.domain.useCases.saveOnboarding
 
 import com.islaharper.dawnofandroid.data.repository.Repository
 
