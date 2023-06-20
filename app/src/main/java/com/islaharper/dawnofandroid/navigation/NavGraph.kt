@@ -9,7 +9,7 @@ import com.islaharper.dawnofandroid.presentation.screens.splash.SplashScreen
 import com.islaharper.dawnofandroid.presentation.screens.welcome.WelcomeScreen
 
 @Composable
-fun SetupNavGraph(navController: NavHostController) {
+fun DawnNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = Screen.Splash.route,

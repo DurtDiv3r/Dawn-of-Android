@@ -2,7 +2,7 @@ package com.islaharper.dawnofandroid.presentation.screens.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.islaharper.dawnofandroid.domain.use_cases.UseCases
+import com.islaharper.dawnofandroid.domain.useCases.UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

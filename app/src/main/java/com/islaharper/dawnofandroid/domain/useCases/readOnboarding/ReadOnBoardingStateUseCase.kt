@@ -1,4 +1,4 @@
-package com.islaharper.dawnofandroid.domain.use_cases.read_onboarding
+package com.islaharper.dawnofandroid.domain.useCases.readOnboarding
 
 import com.islaharper.dawnofandroid.data.repository.Repository
 import kotlinx.coroutines.flow.Flow

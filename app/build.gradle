@@ -145,6 +145,12 @@ dependencies {
     //Lottie for Splash Screen
     implementation 'com.airbnb.android:lottie-compose:4.2.0'
 
+    // Moshi Converter
+    def moshiVersion = "1.14.0"
+    implementation("com.squareup.moshi:moshi:$moshiVersion")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+
     // Testing
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation "androidx.test:rules:1.5.0"

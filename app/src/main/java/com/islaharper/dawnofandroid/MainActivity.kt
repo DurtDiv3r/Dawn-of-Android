@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.islaharper.dawnofandroid.navigation.SetupNavGraph
+import com.islaharper.dawnofandroid.navigation.DawnNavHost
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DawnOfAndroidTheme {
                 navHostController = rememberNavController()
-                SetupNavGraph(navController = navHostController)
+                DawnNavHost(navController = navHostController)
             }
         }
     }
