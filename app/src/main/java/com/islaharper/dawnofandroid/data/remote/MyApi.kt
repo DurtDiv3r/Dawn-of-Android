@@ -1,7 +1,7 @@
 package com.islaharper.dawnofandroid.data.remote
 
-import com.islaharper.dawnofandroid.domain.model.ApiRequest
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
+import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -11,7 +11,7 @@ import retrofit2.http.Query
 interface MyApi {
     // Send token to BE for verification
     @POST("/token_verification")
-    suspend fun verifyTokenOnBackend(@Body request: ApiRequest): ApiResponse
+    suspend fun verifyTokenOnBackend(@Body request: ApiTokenRequest): ApiResponse
 
     // Remove user from BE Database
     @DELETE("/delete_user")
