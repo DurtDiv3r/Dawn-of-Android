@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.islaharper.dawnofandroid.domain.useCases.UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -17,7 +16,7 @@ class SplashViewModel @Inject constructor(private val useCases: UseCases) : View
     val onBoardingCompleted: StateFlow<Boolean> = _onBoardingComplete
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _onBoardingComplete.value =
                 useCases.readOnBoardingUseCase().stateIn(viewModelScope).value
         }
