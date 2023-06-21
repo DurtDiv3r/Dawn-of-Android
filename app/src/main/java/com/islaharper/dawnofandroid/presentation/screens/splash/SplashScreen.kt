@@ -62,7 +62,7 @@ private fun Splash(composition: LottieComposition?, progress: Float) {
         ) {
             Spacer(modifier = Modifier.height(SPLASH_SPACER_HEIGHT))
             Text(
-                text = stringResource(R.string.dawn_of_android),
+                text = stringResource(R.string.app_name),
                 fontSize = MaterialTheme.typography.h4.fontSize,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.infoGreen,
