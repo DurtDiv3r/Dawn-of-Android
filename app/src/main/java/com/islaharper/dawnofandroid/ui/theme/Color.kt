@@ -1,60 +1,67 @@
 package com.islaharper.dawnofandroid.ui.theme
 
-import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val md_theme_light_primary = Color(0xFF006D3B)
+val md_theme_light_onPrimary = Color(0xFFFFFFFF)
+val md_theme_light_primaryContainer = Color(0xFF66FEA2)
+val md_theme_light_onPrimaryContainer = Color(0xFF00210E)
+val md_theme_light_secondary = Color(0xFF4F6353)
+val md_theme_light_onSecondary = Color(0xFFFFFFFF)
+val md_theme_light_secondaryContainer = Color(0xFFD2E8D4)
+val md_theme_light_onSecondaryContainer = Color(0xFF0D1F13)
+val md_theme_light_tertiary = Color(0xFF3A646F)
+val md_theme_light_onTertiary = Color(0xFFFFFFFF)
+val md_theme_light_tertiaryContainer = Color(0xFFBEEAF6)
+val md_theme_light_onTertiaryContainer = Color(0xFF001F26)
+val md_theme_light_error = Color(0xFFBA1A1A)
+val md_theme_light_errorContainer = Color(0xFFFFDAD6)
+val md_theme_light_onError = Color(0xFFFFFFFF)
+val md_theme_light_onErrorContainer = Color(0xFF410002)
+val md_theme_light_background = Color(0xFFFBFDF8)
+val md_theme_light_onBackground = Color(0xFF191C19)
+val md_theme_light_surface = Color(0xFFFBFDF8)
+val md_theme_light_onSurface = Color(0xFF191C19)
+val md_theme_light_surfaceVariant = Color(0xFFDDE5DB)
+val md_theme_light_onSurfaceVariant = Color(0xFF414942)
+val md_theme_light_outline = Color(0xFF717971)
+val md_theme_light_inverseOnSurface = Color(0xFFF0F1EC)
+val md_theme_light_inverseSurface = Color(0xFF2E312E)
+val md_theme_light_inversePrimary = Color(0xFF43E188)
+val md_theme_light_shadow = Color(0xFF000000)
+val md_theme_light_surfaceTint = Color(0xFF006D3B)
+val md_theme_light_outlineVariant = Color(0xFFC1C9BF)
+val md_theme_light_scrim = Color(0xFF000000)
 
-val StatusBarLight = Color(0xFF3700B3)
-val StatusBarDark = Color(0xFF000000)
+val md_theme_dark_primary = Color(0xFF43E188)
+val md_theme_dark_onPrimary = Color(0xFF00391C)
+val md_theme_dark_primaryContainer = Color(0xFF00522B)
+val md_theme_dark_onPrimaryContainer = Color(0xFF66FEA2)
+val md_theme_dark_secondary = Color(0xFFB6CCB8)
+val md_theme_dark_onSecondary = Color(0xFF223527)
+val md_theme_dark_secondaryContainer = Color(0xFF384B3C)
+val md_theme_dark_onSecondaryContainer = Color(0xFFD2E8D4)
+val md_theme_dark_tertiary = Color(0xFFA2CEDA)
+val md_theme_dark_onTertiary = Color(0xFF023640)
+val md_theme_dark_tertiaryContainer = Color(0xFF214C57)
+val md_theme_dark_onTertiaryContainer = Color(0xFFBEEAF6)
+val md_theme_dark_error = Color(0xFFFFB4AB)
+val md_theme_dark_errorContainer = Color(0xFF93000A)
+val md_theme_dark_onError = Color(0xFF690005)
+val md_theme_dark_onErrorContainer = Color(0xFFFFDAD6)
+val md_theme_dark_background = Color(0xFF191C19)
+val md_theme_dark_onBackground = Color(0xFFE1E3DE)
+val md_theme_dark_surface = Color(0xFF191C19)
+val md_theme_dark_onSurface = Color(0xFFE1E3DE)
+val md_theme_dark_surfaceVariant = Color(0xFF414942)
+val md_theme_dark_onSurfaceVariant = Color(0xFFC1C9BF)
+val md_theme_dark_outline = Color(0xFF8B938A)
+val md_theme_dark_inverseOnSurface = Color(0xFF191C19)
+val md_theme_dark_inverseSurface = Color(0xFFE1E3DE)
+val md_theme_dark_inversePrimary = Color(0xFF006D3B)
+val md_theme_dark_shadow = Color(0xFF000000)
+val md_theme_dark_surfaceTint = Color(0xFF43E188)
+val md_theme_dark_outlineVariant = Color(0xFF414942)
+val md_theme_dark_scrim = Color(0xFF000000)
 
-val LightGrey = Color(0xFFD8D8D8)
-val DarkGrey = Color(0xFF2A2A2A)
-val StarColour = Color(0xFFFFC94D)
-
-val ShimmerLightGrey = Color(0xFFF1F1F1)
-val ShimmerMediumGrey = Color(0xFFE3E3E3)
-val ShimmerDarkGrey = Color(0xFF1D1D1D)
-
-val ErrorRed = Color(0xFFFF6C60)
-val InfoGreen = Color(0xFF00C096)
-val LoadingBlue = Color(0xFF1A73E8)
-
-val Colors.errorRed
-    get() = ErrorRed
-
-val Colors.infoGreen
-    get() = InfoGreen
-
-val Colors.loadingBlue
-    get() = LoadingBlue
-
-val Colors.welcomeScreenBackgroundColour
-    get() = if (isLight) Color.White else Color.Black
-
-val Colors.statusBarColour
-    get() = if (isLight) StatusBarLight else StatusBarDark
-
-val Colors.titleColour
-    get() = if (isLight) DarkGrey else LightGrey
-
-val Colors.descriptionColour
-    get() = if (isLight) DarkGrey.copy(alpha = 0.5f) else LightGrey.copy(alpha = 0.5f)
-
-val Colors.activeIndicatorColour
-    get() = if (isLight) Purple500 else Purple700
-
-val Colors.inactiveIndicatorColour
-    get() = if (isLight) LightGrey else DarkGrey
-
-val Colors.buttonBackgroundColour
-    get() = if (isLight) Purple500 else Purple700
-
-val Colors.topAppBarContentColour
-    get() = if (isLight) Color.White else LightGrey
-
-val Colors.topAppBarBackgroundColour
-    get() = if (isLight) Purple500 else Color.Black
+val seed = Color(0xFF3DDC84)
