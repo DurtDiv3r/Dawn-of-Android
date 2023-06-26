@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -36,8 +37,6 @@ import com.islaharper.dawnofandroid.ui.theme.AndroidGreen
 import com.islaharper.dawnofandroid.ui.theme.Neutral90
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 import com.islaharper.dawnofandroid.ui.theme.PADDING_XLARGE
-import com.islaharper.dawnofandroid.ui.theme.PAGING_INDICATOR_SPACING
-import com.islaharper.dawnofandroid.ui.theme.PAGING_INDICATOR_WIDTH
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_LAST_PAGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_PAGE_COUNT
 
@@ -72,8 +71,8 @@ fun WelcomeScreen(
             pagerState = pagerState,
             activeColor = AndroidGreen,
             inactiveColor = Neutral90,
-            indicatorWidth = PAGING_INDICATOR_WIDTH,
-            spacing = PAGING_INDICATOR_SPACING,
+            indicatorWidth = 12.dp,
+            spacing = 8.dp,
         )
         FinishButton(
             modifier = Modifier.weight(1f).padding(horizontal = PADDING_XLARGE),
