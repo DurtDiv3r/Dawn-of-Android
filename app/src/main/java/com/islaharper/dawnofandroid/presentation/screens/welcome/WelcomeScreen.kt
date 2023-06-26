@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,6 +38,7 @@ import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 import com.islaharper.dawnofandroid.ui.theme.PADDING_XLARGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_LAST_PAGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_PAGE_COUNT
+import okhttp3.internal.immutableListOf
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -46,12 +46,13 @@ fun WelcomeScreen(
     navHostController: NavHostController,
     welcomeViewModel: WelcomeViewModel = hiltViewModel(),
 ) {
-    val pages = listOf(
+    val pages = immutableListOf(
         OnBoardingPage.FirstPage,
         OnBoardingPage.SecondPage,
         OnBoardingPage.ThirdPage,
     )
     val pagerState = rememberPagerState()
+    val saveOnBoardingClick = { welcomeViewModel.saveOnBoardingState(true) }
 
     Column(
         modifier = Modifier
@@ -77,8 +78,8 @@ fun WelcomeScreen(
         FinishButton(
             modifier = Modifier.weight(1f).padding(horizontal = PADDING_XLARGE),
             pagerState = pagerState,
+            saveOnBoardingClick = saveOnBoardingClick,
         ) {
-            welcomeViewModel.saveOnBoardingState(completed = true)
             navHostController.popBackStack()
             navHostController.navigate(route = Screen.Login.route)
         }
@@ -104,8 +105,7 @@ fun PagerScreen(page: OnBoardingPage) {
                 .fillMaxWidth(),
             text = page.title,
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = MaterialTheme.typography.displayMedium.fontSize,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.displayMedium,
             textAlign = TextAlign.Center,
         )
         Text(
@@ -115,8 +115,7 @@ fun PagerScreen(page: OnBoardingPage) {
                 .padding(top = PADDING_SMALL),
             text = page.description,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
         )
     }
@@ -127,6 +126,7 @@ fun PagerScreen(page: OnBoardingPage) {
 fun FinishButton(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
+    saveOnBoardingClick: () -> Unit,
     onClick: () -> Unit,
 ) {
     Row(
@@ -139,7 +139,10 @@ fun FinishButton(
             visible = pagerState.currentPage == ONBOARDING_LAST_PAGE,
         ) {
             Button(
-                onClick = onClick,
+                onClick = {
+                    onClick()
+                    saveOnBoardingClick()
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
