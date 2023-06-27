@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
+import com.islaharper.dawnofandroid.util.Constants.PREFS_DARK_MODE_KEY
+import com.islaharper.dawnofandroid.util.Constants.PREFS_DYNAMIC_THEME_KEY
 import com.islaharper.dawnofandroid.util.Constants.PREFS_ONBOARDING_KEY
 import com.islaharper.dawnofandroid.util.Constants.PREFS_SIGNED_IN_KEY
 import kotlinx.coroutines.flow.Flow
@@ -18,14 +20,62 @@ class DataStoreOperationsImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : DataStoreOperations {
 
+    private object PrefsDarkModeKey {
+        val darkModeKey = booleanPreferencesKey(name = PREFS_DARK_MODE_KEY)
+    }
+
+    private object PrefsDynamicThemeKey {
+        val dynamicThemeKey = booleanPreferencesKey(name = PREFS_DYNAMIC_THEME_KEY)
+    }
+
     private object PrefsOnBoardingKey {
         val onBoardingKey = booleanPreferencesKey(name = PREFS_ONBOARDING_KEY)
+    }
+
+    override suspend fun saveDarkModeState(isDarkMode: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PrefsDarkModeKey.darkModeKey] = isDarkMode
+        }
+    }
+
+    override suspend fun saveDynamicThemeState(isDynamicTheme: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PrefsDynamicThemeKey.dynamicThemeKey] = isDynamicTheme
+        }
     }
 
     override suspend fun saveOnBoardingState(isComplete: Boolean) {
         dataStore.edit { preferences ->
             preferences[PrefsOnBoardingKey.onBoardingKey] = isComplete
         }
+    }
+
+    override fun readDarkModeState(): Flow<Boolean> {
+        return dataStore.data
+            .catch { ex ->
+                if (ex is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw ex
+                }
+            }.map { preferences ->
+                val darkModeState = preferences[PrefsDarkModeKey.darkModeKey] ?: false
+                darkModeState
+            }
+    }
+
+    override fun readDynamicThemeState(): Flow<Boolean> {
+        return dataStore.data
+            .catch { ex ->
+                if (ex is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw ex
+                }
+            }.map { preferences ->
+                val dynamicThemeState = preferences[PrefsDynamicThemeKey.dynamicThemeKey] ?: false
+                dynamicThemeState
+            }
     }
 
     override fun readOnBoardingState(): Flow<Boolean> {
