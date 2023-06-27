@@ -72,7 +72,7 @@ private fun Splash(composition: LottieComposition?, progress: Float) {
             Text(
                 text = stringResource(R.string.app_name),
                 color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                style = MaterialTheme.typography.displayMedium,
             )
         }
     }

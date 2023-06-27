@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Dawn of Android</string>
+    <string name="onboarding_page">OnBoarding page</string>
+    <string name="finish_button">Finish</string>
 </resources>

@@ -15,4 +15,8 @@ object Constants {
     const val PREFS_ONBOARDING_KEY = "onboarding_complete"
     const val PREFS_DARK_MODE_KEY = "dark_mode"
     const val PREFS_DYNAMIC_THEME_KEY = "dynamic_theme"
+
+    // OnBoarding
+    const val ONBOARDING_PAGE_COUNT = 3
+    const val ONBOARDING_LAST_PAGE = 2
 }
