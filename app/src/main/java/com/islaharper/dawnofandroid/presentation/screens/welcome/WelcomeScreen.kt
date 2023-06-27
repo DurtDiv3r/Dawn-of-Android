@@ -32,8 +32,6 @@ import com.google.accompanist.pager.rememberPagerState
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.OnBoardingPage
 import com.islaharper.dawnofandroid.navigation.Screen
-import com.islaharper.dawnofandroid.ui.theme.AndroidGreen
-import com.islaharper.dawnofandroid.ui.theme.Neutral90
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 import com.islaharper.dawnofandroid.ui.theme.PADDING_XLARGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_LAST_PAGE
@@ -70,8 +68,8 @@ fun WelcomeScreen(
         HorizontalPagerIndicator(
             modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally),
             pagerState = pagerState,
-            activeColor = AndroidGreen,
-            inactiveColor = Neutral90,
+            activeColor = MaterialTheme.colorScheme.primary,
+            inactiveColor = MaterialTheme.colorScheme.surfaceVariant,
             indicatorWidth = 12.dp,
             spacing = 8.dp,
         )

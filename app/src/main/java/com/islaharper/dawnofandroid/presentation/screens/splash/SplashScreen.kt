@@ -27,8 +27,6 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.navigation.Screen
-import com.islaharper.dawnofandroid.ui.theme.Teal40
-import com.islaharper.dawnofandroid.ui.theme.White
 
 @Composable
 fun SplashScreen(
@@ -59,7 +57,7 @@ private fun Splash(composition: LottieComposition?, progress: Float) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Teal40),
+            .background(MaterialTheme.colorScheme.secondary),
     ) {
         LottieAnimation(
             composition = composition,
@@ -73,7 +71,7 @@ private fun Splash(composition: LottieComposition?, progress: Float) {
             Spacer(modifier = Modifier.height(200.dp))
             Text(
                 text = stringResource(R.string.app_name),
-                color = White,
+                color = MaterialTheme.colorScheme.onSecondary,
                 style = MaterialTheme.typography.displayMedium,
             )
         }

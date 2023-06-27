@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Color
 val White = Color(0xFFFFFFFF)
 val Black = Color(0xFF000000)
 
+// Primary
 val Green10 = Color(0xFF00210E)
 val Green20 = Color(0xFF00391C)
 val Green30 = Color(0xFF00522B)
@@ -12,20 +13,23 @@ val Green40 = Color(0xFF006D3B)
 val Green80 = Color(0xFF43E188)
 val Green90 = Color(0xFF66FEA2)
 
-val Brown10 = Color(0xFF0D1F13)
-val Brown20 = Color(0xFF223527)
-val Brown30 = Color(0xFF384B3C)
-val Brown40 = Color(0xFF4F6353)
-val Brown80 = Color(0xFFB6CCB8)
-val Brown90 = Color(0xFFD2E8D4)
+// Secondary
+val Teal10 = Color(0xFF00201D)
+val Teal20 = Color(0xFF003733)
+val Teal30 = Color(0xFF00504B)
+val Teal40 = Color(0xFF006A63)
+val Teal80 = Color(0xFF3CDCCF)
+val Teal90 = Color(0xFF62F9EC)
 
-val Teal10 = Color(0xFF001F26)
-val Teal20 = Color(0xFF023640)
-val Teal30 = Color(0xFF214C57)
-val Teal40 = Color(0xFF3A646F)
-val Teal80 = Color(0xFFA2CEDA)
-val Teal90 = Color(0xFFBEEAF6)
+// Tertiary
+val Blue10 = Color(0xFF001E2F)
+val Blue20 = Color(0xFF00344E)
+val Blue30 = Color(0xFF004B6F)
+val Blue40 = Color(0xFF006491)
+val Blue80 = Color(0xFF8ACEFF)
+val Blue90 = Color(0xFFC9E6FF)
 
+// Error
 val Red10 = Color(0xFF410002)
 val Red20 = Color(0xFF690005)
 val Red30 = Color(0xFF93000A)
@@ -44,8 +48,3 @@ val NeutralVariant50 = Color(0xFF717971)
 val NeutralVariant60 = Color(0xFF8B938A)
 val NeutralVariant80 = Color(0xFFC1C9BF)
 val NeutralVariant90 = Color(0xFFDDE5DB)
-
-val ErrorRed = Color(0xFFFF6C60)
-val InfoGreen = Color(0xFF00C096)
-val LoadingBlue = Color(0xFF1A73E8)
-val AndroidGreen = Color(0xFF3DDC84)
