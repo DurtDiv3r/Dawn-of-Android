@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Dawn of Android</string>
-    <string name="dawn_of_android">Dawn of Android</string>
     <string name="onboarding_page">OnBoarding page</string>
     <string name="finish_button">Finish</string>
     <string name="socket_error_message">Connection Timeout Exception</string>

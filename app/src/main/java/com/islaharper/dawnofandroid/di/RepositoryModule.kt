@@ -6,14 +6,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.islaharper.dawnofandroid.data.repository.DataStoreOperationsImpl
-import com.islaharper.dawnofandroid.data.repository.Repository
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
-import com.islaharper.dawnofandroid.domain.use_cases.UseCases
-import com.islaharper.dawnofandroid.domain.use_cases.read_onboarding.ReadOnBoardingStateUseCase
-import com.islaharper.dawnofandroid.domain.use_cases.read_signed_in_state.ReadSignedInStateUseCase
-import com.islaharper.dawnofandroid.domain.use_cases.save_onboarding.SaveOnBoardingStateUseCase
-import com.islaharper.dawnofandroid.domain.use_cases.save_signed_in_state.SaveSignedInStateUseCase
-import com.islaharper.dawnofandroid.domain.use_cases.verify_token.VerifyTokenUseCase
 import com.islaharper.dawnofandroid.util.Constants.PREFS_NAME
 import dagger.Module
 import dagger.Provides
@@ -40,17 +33,5 @@ object RepositoryModule {
     @Singleton
     fun provideDataStoreOperations(dataStore: DataStore<Preferences>): DataStoreOperations {
         return DataStoreOperationsImpl(dataStore = dataStore)
-    }
-
-    @Provides
-    @Singleton
-    fun provideUseCases(repository: Repository): UseCases {
-        return UseCases(
-            saveOnBoardingUseCase = SaveOnBoardingStateUseCase(repository),
-            readOnBoardingUseCase = ReadOnBoardingStateUseCase(repository),
-            saveSignedInStateUseCase = SaveSignedInStateUseCase(repository),
-            readSignedInStateUseCase = ReadSignedInStateUseCase(repository),
-            verifyTokenUseCase = VerifyTokenUseCase(repository),
-        )
     }
 }

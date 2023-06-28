@@ -1,7 +1,6 @@
 package com.islaharper.dawnofandroid.presentation.screens.welcome
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,19 +10,18 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -36,16 +34,9 @@ import com.islaharper.dawnofandroid.domain.model.OnBoardingPage
 import com.islaharper.dawnofandroid.navigation.Screen
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 import com.islaharper.dawnofandroid.ui.theme.PADDING_XLARGE
-import com.islaharper.dawnofandroid.ui.theme.PAGING_INDICATOR_SPACING
-import com.islaharper.dawnofandroid.ui.theme.PAGING_INDICATOR_WIDTH
-import com.islaharper.dawnofandroid.ui.theme.activeIndicatorColour
-import com.islaharper.dawnofandroid.ui.theme.buttonBackgroundColour
-import com.islaharper.dawnofandroid.ui.theme.descriptionColour
-import com.islaharper.dawnofandroid.ui.theme.inactiveIndicatorColour
-import com.islaharper.dawnofandroid.ui.theme.titleColour
-import com.islaharper.dawnofandroid.ui.theme.welcomeScreenBackgroundColour
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_LAST_PAGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_PAGE_COUNT
+import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -53,17 +44,18 @@ fun WelcomeScreen(
     navHostController: NavHostController,
     welcomeViewModel: WelcomeViewModel = hiltViewModel(),
 ) {
-    val pages = listOf(
+    val pages = persistentListOf(
         OnBoardingPage.FirstPage,
         OnBoardingPage.SecondPage,
         OnBoardingPage.ThirdPage,
     )
     val pagerState = rememberPagerState()
+    val saveOnBoardingClick = { welcomeViewModel.saveOnBoardingState(true) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colors.welcomeScreenBackgroundColour),
+            .background(color = MaterialTheme.colorScheme.background),
     ) {
         HorizontalPager(
             modifier = Modifier.weight(10f),
@@ -76,18 +68,18 @@ fun WelcomeScreen(
         HorizontalPagerIndicator(
             modifier = Modifier.weight(1f).align(Alignment.CenterHorizontally),
             pagerState = pagerState,
-            activeColor = MaterialTheme.colors.activeIndicatorColour,
-            inactiveColor = MaterialTheme.colors.inactiveIndicatorColour,
-            indicatorWidth = PAGING_INDICATOR_WIDTH,
-            spacing = PAGING_INDICATOR_SPACING,
+            activeColor = MaterialTheme.colorScheme.primary,
+            inactiveColor = MaterialTheme.colorScheme.surfaceVariant,
+            indicatorWidth = 12.dp,
+            spacing = 8.dp,
         )
         FinishButton(
             modifier = Modifier.weight(1f).padding(horizontal = PADDING_XLARGE),
             pagerState = pagerState,
+            saveOnBoardingClick = saveOnBoardingClick,
         ) {
-            welcomeViewModel.saveOnBoardingState(completed = true)
             navHostController.popBackStack()
-            navHostController.navigate(Screen.Login.route)
+            navHostController.navigate(route = Screen.Login.route)
         }
     }
 }
@@ -110,9 +102,8 @@ fun PagerScreen(page: OnBoardingPage) {
             modifier = Modifier
                 .fillMaxWidth(),
             text = page.title,
-            color = MaterialTheme.colors.titleColour,
-            fontSize = MaterialTheme.typography.h4.fontSize,
-            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.displayMedium,
             textAlign = TextAlign.Center,
         )
         Text(
@@ -121,19 +112,19 @@ fun PagerScreen(page: OnBoardingPage) {
                 .padding(horizontal = PADDING_XLARGE)
                 .padding(top = PADDING_SMALL),
             text = page.description,
-            color = MaterialTheme.colors.descriptionColour,
-            fontSize = MaterialTheme.typography.subtitle1.fontSize,
-            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
         )
     }
 }
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun FinishButton(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
+    saveOnBoardingClick: () -> Unit,
     onClick: () -> Unit,
 ) {
     Row(
@@ -146,10 +137,13 @@ fun FinishButton(
             visible = pagerState.currentPage == ONBOARDING_LAST_PAGE,
         ) {
             Button(
-                onClick = onClick,
+                onClick = {
+                    onClick()
+                    saveOnBoardingClick()
+                },
                 colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
-                    backgroundColor = MaterialTheme.colors.buttonBackgroundColour,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
             ) {
                 Text(text = stringResource(R.string.finish_button))

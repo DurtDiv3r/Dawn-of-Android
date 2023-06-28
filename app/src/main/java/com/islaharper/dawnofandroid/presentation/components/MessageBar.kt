@@ -1,5 +1,6 @@
 package com.islaharper.dawnofandroid.presentation.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -10,13 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,14 +28,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
-import com.islaharper.dawnofandroid.ui.theme.ErrorRed
-import com.islaharper.dawnofandroid.ui.theme.InfoGreen
 import kotlinx.coroutines.delay
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -80,7 +78,10 @@ fun MessageBar(messageBarState: MessageBarState) {
             shrinkTowards = Alignment.Top,
         ),
     ) {
-        Message(messageBarState = messageBarState, errorMessage = errorMessage)
+        Message(
+            messageBarState = messageBarState,
+            errorMessage = errorMessage,
+        )
     }
 }
 
@@ -89,10 +90,21 @@ fun Message(
     messageBarState: MessageBarState,
     errorMessage: String = "",
 ) {
+    val messageBarColour = if (messageBarState.error != null) {
+        MaterialTheme.colorScheme.error
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+    val messageBarContentColour = if (messageBarState.error != null) {
+        MaterialTheme.colorScheme.onError
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(if (messageBarState.error != null) ErrorRed else InfoGreen)
+            .background(messageBarColour)
             .padding(horizontal = 20.dp)
             .height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -104,7 +116,7 @@ fun Message(
                 Icons.Default.Check
             },
             contentDescription = stringResource(R.string.message_bar_icon),
-            tint = Color.White,
+            tint = messageBarContentColour,
         )
         Divider(
             modifier = Modifier.width(12.dp),
@@ -116,16 +128,16 @@ fun Message(
             } else {
                 messageBarState.message.toString()
             },
-            color = Color.White,
-            fontSize = MaterialTheme.typography.button.fontSize,
-            fontWeight = FontWeight.Bold,
+            color = messageBarContentColour,
+            style = MaterialTheme.typography.labelLarge,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
         )
     }
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun MessageBarSuccessPreview() {
     Message(
@@ -133,7 +145,8 @@ fun MessageBarSuccessPreview() {
     )
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun MessageBarErrorPreview() {
     Message(
@@ -142,7 +155,8 @@ fun MessageBarErrorPreview() {
     )
 }
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun MessageBarConnectionErrorPreview() {
     Message(
