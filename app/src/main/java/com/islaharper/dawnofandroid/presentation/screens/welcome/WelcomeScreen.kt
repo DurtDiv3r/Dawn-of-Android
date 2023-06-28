@@ -36,7 +36,7 @@ import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 import com.islaharper.dawnofandroid.ui.theme.PADDING_XLARGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_LAST_PAGE
 import com.islaharper.dawnofandroid.util.Constants.ONBOARDING_PAGE_COUNT
-import okhttp3.internal.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -44,7 +44,7 @@ fun WelcomeScreen(
     navHostController: NavHostController,
     welcomeViewModel: WelcomeViewModel = hiltViewModel(),
 ) {
-    val pages = immutableListOf(
+    val pages = persistentListOf(
         OnBoardingPage.FirstPage,
         OnBoardingPage.SecondPage,
         OnBoardingPage.ThirdPage,
