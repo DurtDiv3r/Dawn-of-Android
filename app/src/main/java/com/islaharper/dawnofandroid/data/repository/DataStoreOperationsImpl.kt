@@ -32,6 +32,10 @@ class DataStoreOperationsImpl @Inject constructor(
         val onBoardingKey = booleanPreferencesKey(name = PREFS_ONBOARDING_KEY)
     }
 
+    private object PrefsSignedInKey {
+        val signedInKey = booleanPreferencesKey(name = PREFS_SIGNED_IN_KEY)
+    }
+
     override suspend fun saveDarkModeState(isDarkMode: Boolean) {
         dataStore.edit { preferences ->
             preferences[PrefsDarkModeKey.darkModeKey] = isDarkMode
@@ -47,6 +51,12 @@ class DataStoreOperationsImpl @Inject constructor(
     override suspend fun saveOnBoardingState(isComplete: Boolean) {
         dataStore.edit { preferences ->
             preferences[PrefsOnBoardingKey.onBoardingKey] = isComplete
+        }
+    }
+
+    override suspend fun saveSignInState(signedIn: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PrefsSignedInKey.signedInKey] = signedIn
         }
     }
 
@@ -90,16 +100,6 @@ class DataStoreOperationsImpl @Inject constructor(
                 val onBoardingState = preferences[PrefsOnBoardingKey.onBoardingKey] ?: false
                 onBoardingState
             }
-    }
-
-    private object PrefsSignedInKey {
-        val signedInKey = booleanPreferencesKey(name = PREFS_SIGNED_IN_KEY)
-    }
-
-    override suspend fun saveSignInState(signedIn: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PrefsSignedInKey.signedInKey] = signedIn
-        }
     }
 
     override fun readSignInState(): Flow<Boolean> {
