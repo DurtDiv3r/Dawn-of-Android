@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,10 +79,20 @@ fun MessageBar(messageBarState: MessageBarState) {
             shrinkTowards = Alignment.Top,
         ),
     ) {
-        Message(
-            messageBarState = messageBarState,
-            errorMessage = errorMessage,
-        )
+        if (messageBarState.error != null) {
+            Message(
+                messageBarState = messageBarState,
+                errorMessage = errorMessage,
+                messageBarColour = MaterialTheme.colorScheme.error,
+                messageContentColour = MaterialTheme.colorScheme.onError,
+                messageIcon = Icons.Default.Warning,
+            )
+        } else {
+            Message(
+                messageBarState = messageBarState,
+                errorMessage = errorMessage,
+            )
+        }
     }
 }
 
@@ -89,18 +100,10 @@ fun MessageBar(messageBarState: MessageBarState) {
 fun Message(
     messageBarState: MessageBarState,
     errorMessage: String = "",
+    messageBarColour: Color = MaterialTheme.colorScheme.primary,
+    messageContentColour: Color = MaterialTheme.colorScheme.onPrimary,
+    messageIcon: ImageVector = Icons.Default.Check,
 ) {
-    val messageBarColour = if (messageBarState.error != null) {
-        MaterialTheme.colorScheme.error
-    } else {
-        MaterialTheme.colorScheme.primary
-    }
-    val messageBarContentColour = if (messageBarState.error != null) {
-        MaterialTheme.colorScheme.onError
-    } else {
-        MaterialTheme.colorScheme.onPrimary
-    }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,13 +113,9 @@ fun Message(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = if (messageBarState.error != null) {
-                Icons.Default.Warning
-            } else {
-                Icons.Default.Check
-            },
+            imageVector = messageIcon,
             contentDescription = stringResource(R.string.message_bar_icon),
-            tint = messageBarContentColour,
+            tint = messageContentColour,
         )
         Divider(
             modifier = Modifier.width(12.dp),
@@ -128,7 +127,7 @@ fun Message(
             } else {
                 messageBarState.message.toString()
             },
-            color = messageBarContentColour,
+            color = messageContentColour,
             style = MaterialTheme.typography.labelLarge,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -152,6 +151,9 @@ fun MessageBarErrorPreview() {
     Message(
         messageBarState = MessageBarState(error = SocketTimeoutException()),
         errorMessage = stringResource(id = R.string.socket_error_message),
+        messageBarColour = MaterialTheme.colorScheme.error,
+        messageContentColour = MaterialTheme.colorScheme.onError,
+        messageIcon = Icons.Default.Warning,
     )
 }
 
@@ -162,5 +164,8 @@ fun MessageBarConnectionErrorPreview() {
     Message(
         messageBarState = MessageBarState(error = ConnectException()),
         errorMessage = stringResource(id = R.string.connect_error_message),
+        messageBarColour = MaterialTheme.colorScheme.error,
+        messageContentColour = MaterialTheme.colorScheme.onError,
+        messageIcon = Icons.Default.Warning,
     )
 }
