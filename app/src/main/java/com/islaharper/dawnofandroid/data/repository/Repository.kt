@@ -1,9 +1,10 @@
 package com.islaharper.dawnofandroid.data.repository
 
-import com.islaharper.dawnofandroid.domain.model.ApiRequest
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
+import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
 import com.islaharper.dawnofandroid.domain.repository.RemoteDataSource
+import com.islaharper.dawnofandroid.util.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -49,7 +50,7 @@ class Repository @Inject constructor(
     }
 
     // Verify token for access to authorised endpoints
-    suspend fun verifyTokenOnBackend(request: ApiRequest): ApiResponse {
+    suspend fun verifyTokenOnBackend(request: ApiTokenRequest): Resource<ApiResponse> {
         return remoteDataSource.verifyTokenOnBackend(request)
     }
 }
