@@ -6,5 +6,9 @@
     <string name="connect_error_message">Internet Connection Unavailable</string>
     <string name="message_bar_icon">Message Bar Icon</string>
     <string name="successful_sign_in">Successful Sign In</string>
+    <string name="sign_in">Sign In</string>
+    <string name="google_logo">Google Logo</string>
+    <string name="sign_in_to_continue">Sign in to continue</string>
+    <string name="sign_in_description">To access this App you\nfirst need to sign in</string>
 
 </resources>
