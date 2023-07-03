@@ -14,6 +14,8 @@ import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCa
 import com.islaharper.dawnofandroid.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +27,8 @@ class LoginViewModel @Inject constructor(
     private val _signedInState: MutableState<Boolean> = mutableStateOf(false)
     val signedInState: State<Boolean> = _signedInState
 
-    private val _messageBarState: MutableState<MessageBarState> = mutableStateOf(MessageBarState())
+    private val _messageBarState: MutableState<MessageBarState> =
+        mutableStateOf(MessageBarState.Idle)
     val messageBarState: State<MessageBarState> = _messageBarState
 
     private val _apiResponse: MutableState<Resource<ApiResponse>> = mutableStateOf(Resource.Idle)
@@ -45,8 +48,8 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun updateMessageBarErrorState() {
-        _messageBarState.value = MessageBarState(error = AccountNotFoundException())
+    fun updateMessageBarErrorState(errorMessage: String) {
+        _messageBarState.value = MessageBarState.Failure(message = errorMessage)
     }
 
     fun verifyTokenOnBackend(apiRequest: ApiTokenRequest) {
@@ -56,21 +59,30 @@ class LoginViewModel @Inject constructor(
                 val response = verifyTokenUseCase(request = apiRequest)
                 _apiResponse.value = response
                 if (response is Resource.Success) {
-                    _messageBarState.value = MessageBarState(
-                        message = response.data.message,
+                    _messageBarState.value = MessageBarState.Success(
+                        message = "Successfully Signed In",
                     )
                 } else if (response is Resource.Error) {
-                    _messageBarState.value = MessageBarState(
-                        error = response.ex,
+                    _messageBarState.value = MessageBarState.Failure(
+                        message = when (response.ex) {
+                            is SocketTimeoutException -> {
+                                "Connection Timeout Exception"
+                            }
+
+                            is ConnectException -> {
+                                "Internet Connection Unavailable"
+                            }
+
+                            else -> {
+                                response.ex?.message.toString()
+                            }
+                        },
                     )
                 }
             }
         } catch (ex: Exception) {
             _apiResponse.value = Resource.Error(ex = ex)
-            _messageBarState.value = MessageBarState(error = ex)
+            _messageBarState.value = MessageBarState.Failure(message = ex.message.toString())
         }
     }
 }
-
-class AccountNotFoundException(override val message: String? = "Google Account not found") :
-    Exception()
