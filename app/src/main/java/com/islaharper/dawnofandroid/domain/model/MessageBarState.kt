@@ -1,6 +1,8 @@
 package com.islaharper.dawnofandroid.domain.model
 
-data class MessageBarState(
-    val message: String? = null,
-    val error: Exception? = null,
-)
+sealed class MessageBarState(open val message: String) {
+    // Idle state for initialisation in ViewModel
+    object Idle : MessageBarState("")
+    data class Success(override val message: String) : MessageBarState(message)
+    data class Failure(override val message: String) : MessageBarState(message)
+}
