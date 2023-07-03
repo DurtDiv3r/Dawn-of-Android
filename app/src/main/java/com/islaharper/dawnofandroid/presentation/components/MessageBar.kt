@@ -1,6 +1,7 @@
 package com.islaharper.dawnofandroid.presentation.components
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -35,41 +36,20 @@ import androidx.compose.ui.unit.dp
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
 import kotlinx.coroutines.delay
-import java.net.ConnectException
-import java.net.SocketTimeoutException
 
 @Composable
 fun MessageBar(messageBarState: MessageBarState) {
     var startAnimation by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-
-    val socketErrorMessage = stringResource(id = R.string.socket_error_message)
-    val connectErrorMessage = stringResource(id = R.string.connect_error_message)
 
     LaunchedEffect(key1 = messageBarState) {
-        if (messageBarState.error != null) {
-            errorMessage = when (messageBarState.error) {
-                is SocketTimeoutException -> {
-                    socketErrorMessage
-                }
-
-                is ConnectException -> {
-                    connectErrorMessage
-                }
-
-                else -> {
-                    "${messageBarState.error.message} "
-                }
-            }
-        }
         startAnimation = true
         delay(3000)
         startAnimation = false
     }
 
     AnimatedVisibility(
-        visible = messageBarState.error != null && startAnimation ||
-            messageBarState.message != null && startAnimation,
+        visible = messageBarState is MessageBarState.Failure && startAnimation ||
+            messageBarState is MessageBarState.Success && startAnimation,
         enter = expandVertically(
             animationSpec = tween(300),
             expandFrom = Alignment.Top,
@@ -79,27 +59,32 @@ fun MessageBar(messageBarState: MessageBarState) {
             shrinkTowards = Alignment.Top,
         ),
     ) {
-        if (messageBarState.error != null) {
-            Message(
-                messageBarState = messageBarState,
-                errorMessage = errorMessage,
-                messageBarColour = MaterialTheme.colorScheme.error,
-                messageContentColour = MaterialTheme.colorScheme.onError,
-                messageIcon = Icons.Default.Warning,
-            )
-        } else {
-            Message(
-                messageBarState = messageBarState,
-                errorMessage = errorMessage,
-            )
+        when (messageBarState) {
+            is MessageBarState.Failure -> {
+                Message(
+                    message = messageBarState.message,
+                    messageBarColour = MaterialTheme.colorScheme.error,
+                    messageContentColour = MaterialTheme.colorScheme.onError,
+                    messageIcon = Icons.Default.Warning,
+                )
+            }
+
+            is MessageBarState.Success -> {
+                Message(
+                    message = messageBarState.message,
+                )
+            }
+
+            else -> {
+                Log.d("MessageBar", "MessageBarState.Idle")
+            }
         }
     }
 }
 
 @Composable
 fun Message(
-    messageBarState: MessageBarState,
-    errorMessage: String = "",
+    message: String = stringResource(id = R.string.successful_sign_in),
     messageBarColour: Color = MaterialTheme.colorScheme.primary,
     messageContentColour: Color = MaterialTheme.colorScheme.onPrimary,
     messageIcon: ImageVector = Icons.Default.Check,
@@ -119,14 +104,10 @@ fun Message(
         )
         Divider(
             modifier = Modifier.width(12.dp),
-            color = Color.Transparent,
+            color = messageBarColour,
         )
         Text(
-            text = if (messageBarState.error != null) {
-                errorMessage
-            } else {
-                messageBarState.message.toString()
-            },
+            text = message,
             color = messageContentColour,
             style = MaterialTheme.typography.labelLarge,
             overflow = TextOverflow.Ellipsis,
@@ -140,7 +121,7 @@ fun Message(
 @Composable
 fun MessageBarSuccessPreview() {
     Message(
-        messageBarState = MessageBarState(message = stringResource(R.string.successful_sign_in)),
+        message = stringResource(R.string.successful_sign_in),
     )
 }
 
@@ -149,8 +130,7 @@ fun MessageBarSuccessPreview() {
 @Composable
 fun MessageBarErrorPreview() {
     Message(
-        messageBarState = MessageBarState(error = SocketTimeoutException()),
-        errorMessage = stringResource(id = R.string.socket_error_message),
+        message = stringResource(id = R.string.socket_error_message),
         messageBarColour = MaterialTheme.colorScheme.error,
         messageContentColour = MaterialTheme.colorScheme.onError,
         messageIcon = Icons.Default.Warning,
@@ -162,8 +142,7 @@ fun MessageBarErrorPreview() {
 @Composable
 fun MessageBarConnectionErrorPreview() {
     Message(
-        messageBarState = MessageBarState(error = ConnectException()),
-        errorMessage = stringResource(id = R.string.connect_error_message),
+        message = stringResource(id = R.string.connect_error_message),
         messageBarColour = MaterialTheme.colorScheme.error,
         messageContentColour = MaterialTheme.colorScheme.onError,
         messageIcon = Icons.Default.Warning,
