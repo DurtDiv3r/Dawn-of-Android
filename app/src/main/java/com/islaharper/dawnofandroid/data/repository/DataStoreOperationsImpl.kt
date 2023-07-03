@@ -9,6 +9,7 @@ import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
 import com.islaharper.dawnofandroid.util.Constants.PREFS_DARK_MODE_KEY
 import com.islaharper.dawnofandroid.util.Constants.PREFS_DYNAMIC_THEME_KEY
 import com.islaharper.dawnofandroid.util.Constants.PREFS_ONBOARDING_KEY
+import com.islaharper.dawnofandroid.util.Constants.PREFS_SIGNED_IN_KEY
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -31,6 +32,10 @@ class DataStoreOperationsImpl @Inject constructor(
         val onBoardingKey = booleanPreferencesKey(name = PREFS_ONBOARDING_KEY)
     }
 
+    private object PrefsSignedInKey {
+        val signedInKey = booleanPreferencesKey(name = PREFS_SIGNED_IN_KEY)
+    }
+
     override suspend fun saveDarkModeState(isDarkMode: Boolean) {
         dataStore.edit { preferences ->
             preferences[PrefsDarkModeKey.darkModeKey] = isDarkMode
@@ -46,6 +51,12 @@ class DataStoreOperationsImpl @Inject constructor(
     override suspend fun saveOnBoardingState(isComplete: Boolean) {
         dataStore.edit { preferences ->
             preferences[PrefsOnBoardingKey.onBoardingKey] = isComplete
+        }
+    }
+
+    override suspend fun saveSignInState(signedIn: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PrefsSignedInKey.signedInKey] = signedIn
         }
     }
 
@@ -88,6 +99,21 @@ class DataStoreOperationsImpl @Inject constructor(
             }.map { preferences ->
                 val onBoardingState = preferences[PrefsOnBoardingKey.onBoardingKey] ?: false
                 onBoardingState
+            }
+    }
+
+    override fun readSignInState(): Flow<Boolean> {
+        return dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
+            }
+            .map { preferences ->
+                val signedInState = preferences[PrefsSignedInKey.signedInKey] ?: false
+                signedInState
             }
     }
 }

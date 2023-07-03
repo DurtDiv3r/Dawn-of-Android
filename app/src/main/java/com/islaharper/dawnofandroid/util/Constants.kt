@@ -13,6 +13,7 @@ object Constants {
     // PREFS
     const val PREFS_NAME = "app_preferences"
     const val PREFS_ONBOARDING_KEY = "onboarding_complete"
+    const val PREFS_SIGNED_IN_KEY = "signed_in_key"
     const val PREFS_DARK_MODE_KEY = "dark_mode"
     const val PREFS_DYNAMIC_THEME_KEY = "dynamic_theme"
 

@@ -32,4 +32,13 @@ class Repository @Inject constructor(private val dataStoreOperations: DataStoreO
     fun readOnBoardingState(): Flow<Boolean> {
         return dataStoreOperations.readOnBoardingState()
     }
+
+    // Signed In State
+    suspend fun saveSignedInState(signedIn: Boolean) {
+        dataStoreOperations.saveSignInState(signedIn)
+    }
+
+    fun readSignedInState(): Flow<Boolean> {
+        return dataStoreOperations.readSignInState()
+    }
 }
