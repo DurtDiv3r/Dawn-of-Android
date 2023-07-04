@@ -75,7 +75,7 @@ fun signIn(
                 .setFilterByAuthorizedAccounts(true)
                 .build(),
         )
-        .setAutoSelectEnabled(true)
+        .setAutoSelectEnabled(false)
         .build()
 
     oneTapClient.beginSignIn(signInRequest)
