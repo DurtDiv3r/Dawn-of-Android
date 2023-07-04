@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.islaharper.dawnofandroid.presentation.screens.home.HomeScreen
 import com.islaharper.dawnofandroid.presentation.screens.login.LoginScreen
 import com.islaharper.dawnofandroid.presentation.screens.splash.SplashScreen
 import com.islaharper.dawnofandroid.presentation.screens.welcome.WelcomeScreen
@@ -31,6 +32,13 @@ fun DawnNavHost(
         composable(route = Screen.Login.route) {
             LoginScreen(
                 navHostController = navController,
+            )
+        }
+        composable(route = Screen.Home.route) {
+            HomeScreen(
+                navHostController = navController,
+                onThemeUpdated = onThemeUpdated,
+                onDynamicUpdated = onDynamicUpdated,
             )
         }
     }
