@@ -8,6 +8,6 @@ import javax.inject.Inject
 
 class VerifyTokenUseCase @Inject constructor(private val repository: Repository) {
     suspend operator fun invoke(request: ApiTokenRequest): Resource<ApiResponse> {
-        return repository.verifyTokenOnBackend(request = request)
+        return repository.verifyToken(request = request)
     }
 }
