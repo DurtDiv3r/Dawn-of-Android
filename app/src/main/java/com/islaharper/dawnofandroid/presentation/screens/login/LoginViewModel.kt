@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(
 
     fun saveSignedInState(signedIn: Boolean) {
         viewModelScope.launch {
-            _signedInState.value = saveSignedInStateUseCase(signedIn)
+            _signedInState.value = saveSignedInStateUseCase(signedIn).stateIn(viewModelScope).value
         }
     }
 
@@ -54,32 +54,33 @@ class LoginViewModel @Inject constructor(
     fun verifyToken(apiRequest: ApiTokenRequest) {
         _apiResponse.value = Resource.Loading
         viewModelScope.launch {
-            val response = verifyTokenUseCase(request = apiRequest)
-            _apiResponse.value = response
-            if (response is Resource.Success) {
-                _messageBarState.value = MessageBarState.Success(
-                    message = "Successfully Signed In",
-                )
-            } else if (response is Resource.Error) {
-                _messageBarState.value = MessageBarState.Failure(
-                    message = when (response.ex) {
-                        is SocketTimeoutException -> {
-                            "Connection Timeout Exception"
-                        }
+            verifyTokenUseCase.invoke(request = apiRequest).collect { response ->
+                _apiResponse.value = response
+                if (response is Resource.Success) {
+                    _messageBarState.value = MessageBarState.Success(
+                        message = "Successfully Signed In",
+                    )
+                } else if (response is Resource.Error) {
+                    _messageBarState.value = MessageBarState.Failure(
+                        message = when (response.ex) {
+                            is SocketTimeoutException -> {
+                                "Connection Timeout Exception"
+                            }
 
-                        is ConnectException -> {
-                            "Internet Connection Unavailable"
-                        }
+                            is ConnectException -> {
+                                "Internet Connection Unavailable"
+                            }
 
-                        is IOException -> {
-                            "Server Unreachable"
-                        }
+                            is IOException -> {
+                                "Server Unreachable"
+                            }
 
-                        else -> {
-                            response.ex?.message.toString()
-                        }
-                    },
-                )
+                            else -> {
+                                response.ex?.message.toString()
+                            }
+                        },
+                    )
+                }
             }
         }
     }
