@@ -1,8 +1,6 @@
 package com.islaharper.dawnofandroid.di
 
 import com.islaharper.dawnofandroid.data.remote.MyApi
-import com.islaharper.dawnofandroid.data.repository.RemoteDataSourceImpl
-import com.islaharper.dawnofandroid.domain.repository.RemoteDataSource
 import com.islaharper.dawnofandroid.util.Constants.BASE_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -56,11 +54,5 @@ object NetworkModule {
     @Singleton
     fun provideApi(retrofit: Retrofit): MyApi {
         return retrofit.create(MyApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRemoteDataSource(myApi: MyApi): RemoteDataSource {
-        return RemoteDataSourceImpl(myApi = myApi)
     }
 }

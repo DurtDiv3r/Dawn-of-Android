@@ -11,7 +11,7 @@ import retrofit2.http.Query
 interface MyApi {
     // Send token to BE for verification
     @POST("/token_verification")
-    suspend fun verifyTokenOnBackend(@Body request: ApiTokenRequest): ApiResponse
+    suspend fun verifyToken(@Body request: ApiTokenRequest): ApiResponse
 
     // Remove user from BE Database
     @DELETE("/delete_user")

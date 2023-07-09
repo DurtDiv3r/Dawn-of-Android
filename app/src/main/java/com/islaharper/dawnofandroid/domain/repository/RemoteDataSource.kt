@@ -6,5 +6,5 @@ import com.islaharper.dawnofandroid.util.Resource
 
 interface RemoteDataSource {
     // Backend: Verify token for access to authorised endpoints
-    suspend fun verifyTokenOnBackend(request: ApiTokenRequest): Resource<ApiResponse>
+    suspend fun verifyToken(request: ApiTokenRequest): Resource<ApiResponse>
 }

@@ -1,8 +1,5 @@
 package com.islaharper.dawnofandroid.presentation.screens.login
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
@@ -13,7 +10,11 @@ import com.islaharper.dawnofandroid.domain.useCases.saveSignedInState.SaveSigned
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCase
 import com.islaharper.dawnofandroid.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import javax.inject.Inject
@@ -24,27 +25,25 @@ class LoginViewModel @Inject constructor(
     private val saveSignedInStateUseCase: SaveSignedInStateUseCase,
     private val verifyTokenUseCase: VerifyTokenUseCase,
 ) : ViewModel() {
-    private val _signedInState: MutableState<Boolean> = mutableStateOf(false)
-    val signedInState: State<Boolean> = _signedInState
 
-    private val _messageBarState: MutableState<MessageBarState> =
-        mutableStateOf(MessageBarState.Idle)
-    val messageBarState: State<MessageBarState> = _messageBarState
+    private val _signedInState = MutableStateFlow(false)
+    val signedInState: StateFlow<Boolean> = _signedInState
 
-    private val _apiResponse: MutableState<Resource<ApiResponse>> = mutableStateOf(Resource.Idle)
-    val apiResponse: State<Resource<ApiResponse>> = _apiResponse
+    private val _messageBarState = MutableStateFlow<MessageBarState>(MessageBarState.Idle)
+    val messageBarState: StateFlow<MessageBarState> = _messageBarState
+
+    private val _apiResponse = MutableStateFlow<Resource<ApiResponse>>(Resource.Idle)
+    val apiResponse: StateFlow<Resource<ApiResponse>> = _apiResponse
 
     init {
         viewModelScope.launch {
-            readSignedInStateUseCase.invoke().collect { isSignedIn ->
-                _signedInState.value = isSignedIn
-            }
+            _signedInState.value = readSignedInStateUseCase().stateIn(viewModelScope).value
         }
     }
 
     fun saveSignedInState(signedIn: Boolean) {
         viewModelScope.launch {
-            saveSignedInStateUseCase(signedIn)
+            _signedInState.value = saveSignedInStateUseCase(signedIn).stateIn(viewModelScope).value
         }
     }
 
@@ -52,11 +51,10 @@ class LoginViewModel @Inject constructor(
         _messageBarState.value = MessageBarState.Failure(message = errorMessage)
     }
 
-    fun verifyTokenOnBackend(apiRequest: ApiTokenRequest) {
+    fun verifyToken(apiRequest: ApiTokenRequest) {
         _apiResponse.value = Resource.Loading
-        try {
-            viewModelScope.launch {
-                val response = verifyTokenUseCase(request = apiRequest)
+        viewModelScope.launch {
+            verifyTokenUseCase.invoke(request = apiRequest).collect { response ->
                 _apiResponse.value = response
                 if (response is Resource.Success) {
                     _messageBarState.value = MessageBarState.Success(
@@ -73,6 +71,10 @@ class LoginViewModel @Inject constructor(
                                 "Internet Connection Unavailable"
                             }
 
+                            is IOException -> {
+                                "Server Unreachable"
+                            }
+
                             else -> {
                                 response.ex?.message.toString()
                             }
@@ -80,9 +82,6 @@ class LoginViewModel @Inject constructor(
                     )
                 }
             }
-        } catch (ex: Exception) {
-            _apiResponse.value = Resource.Error(ex = ex)
-            _messageBarState.value = MessageBarState.Failure(message = ex.message.toString())
         }
     }
 }
