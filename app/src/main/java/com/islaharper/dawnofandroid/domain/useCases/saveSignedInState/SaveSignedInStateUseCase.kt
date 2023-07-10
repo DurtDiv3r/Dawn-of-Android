@@ -1,10 +1,7 @@
 package com.islaharper.dawnofandroid.domain.useCases.saveSignedInState
 
-import com.islaharper.dawnofandroid.data.repository.Repository
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class SaveSignedInStateUseCase @Inject constructor(private val repository: Repository) {
-    suspend operator fun invoke(signedIn: Boolean) {
-        repository.saveSignedInState(signedIn = signedIn)
-    }
+interface SaveSignedInStateUseCase {
+    suspend operator fun invoke(signedIn: Boolean): Flow<Boolean>
 }

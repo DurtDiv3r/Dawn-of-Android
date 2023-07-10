@@ -41,8 +41,8 @@ class Repository @Inject constructor(
     }
 
     // Signed In State
-    suspend fun saveSignedInState(signedIn: Boolean) {
-        dataStoreOperations.saveSignInState(signedIn)
+    suspend fun saveSignedInState(signedIn: Boolean): Boolean {
+        return dataStoreOperations.saveSignInState(signedIn)
     }
 
     fun readSignedInState(): Flow<Boolean> {
@@ -50,7 +50,7 @@ class Repository @Inject constructor(
     }
 
     // Verify token for access to authorised endpoints
-    suspend fun verifyTokenOnBackend(request: ApiTokenRequest): Resource<ApiResponse> {
-        return remoteDataSource.verifyTokenOnBackend(request)
+    suspend fun verifyToken(request: ApiTokenRequest): Resource<ApiResponse> {
+        return remoteDataSource.verifyToken(request)
     }
 }
