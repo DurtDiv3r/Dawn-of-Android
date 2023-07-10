@@ -54,10 +54,11 @@ class DataStoreOperationsImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveSignInState(signedIn: Boolean) {
+    override suspend fun saveSignInState(signedIn: Boolean): Boolean {
         dataStore.edit { preferences ->
             preferences[PrefsSignedInKey.signedInKey] = signedIn
         }
+        return signedIn
     }
 
     override fun readDarkModeState(): Flow<Boolean> {

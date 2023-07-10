@@ -1,10 +1,17 @@
 package com.islaharper.dawnofandroid.data.repository
 
+import com.islaharper.dawnofandroid.domain.model.ApiResponse
+import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
+import com.islaharper.dawnofandroid.domain.repository.RemoteDataSource
+import com.islaharper.dawnofandroid.util.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class Repository @Inject constructor(private val dataStoreOperations: DataStoreOperations) {
+class Repository @Inject constructor(
+    private val dataStoreOperations: DataStoreOperations,
+    private val remoteDataSource: RemoteDataSource,
+) {
 
     // Dark Mode State
     suspend fun saveDarkModeState(isDarkMode: Boolean) {
@@ -34,11 +41,16 @@ class Repository @Inject constructor(private val dataStoreOperations: DataStoreO
     }
 
     // Signed In State
-    suspend fun saveSignedInState(signedIn: Boolean) {
-        dataStoreOperations.saveSignInState(signedIn)
+    suspend fun saveSignedInState(signedIn: Boolean): Boolean {
+        return dataStoreOperations.saveSignInState(signedIn)
     }
 
     fun readSignedInState(): Flow<Boolean> {
         return dataStoreOperations.readSignInState()
+    }
+
+    // Verify token for access to authorised endpoints
+    suspend fun verifyToken(request: ApiTokenRequest): Resource<ApiResponse> {
+        return remoteDataSource.verifyToken(request)
     }
 }
