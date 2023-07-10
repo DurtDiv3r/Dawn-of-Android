@@ -56,30 +56,41 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             verifyTokenUseCase.invoke(request = apiRequest).collect { response ->
                 _apiResponse.value = response
-                if (response is Resource.Success) {
-                    _messageBarState.value = MessageBarState.Success(
-                        message = "Successfully Signed In",
-                    )
-                } else if (response is Resource.Error) {
-                    _messageBarState.value = MessageBarState.Failure(
-                        message = when (response.ex) {
-                            is SocketTimeoutException -> {
-                                "Connection Timeout Exception"
-                            }
 
-                            is ConnectException -> {
-                                "Internet Connection Unavailable"
-                            }
+                when (response) {
+                    is Resource.Idle -> {
+                    }
 
-                            is IOException -> {
-                                "Server Unreachable"
-                            }
+                    is Resource.Loading -> {
+                    }
 
-                            else -> {
-                                response.ex?.message.toString()
-                            }
-                        },
-                    )
+                    is Resource.Success -> {
+                        _messageBarState.value = MessageBarState.Success(
+                            message = "Successfully Signed In",
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _messageBarState.value = MessageBarState.Failure(
+                            message = when (response.ex) {
+                                is SocketTimeoutException -> {
+                                    "Connection Timeout Exception"
+                                }
+
+                                is ConnectException -> {
+                                    "Internet Connection Unavailable"
+                                }
+
+                                is IOException -> {
+                                    "Server Unreachable"
+                                }
+
+                                else -> {
+                                    response.ex?.message ?: "Unknown Error"
+                                }
+                            },
+                        )
+                    }
                 }
             }
         }

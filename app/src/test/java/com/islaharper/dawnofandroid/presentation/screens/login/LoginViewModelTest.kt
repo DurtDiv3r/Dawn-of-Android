@@ -11,6 +11,7 @@ import com.islaharper.dawnofandroid.domain.useCases.verifyToken.FakeVerifyTokenU
 import com.islaharper.dawnofandroid.util.Resource
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -20,6 +21,7 @@ import org.junit.Before
 import org.junit.Test
 import java.net.ConnectException
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
 
     private lateinit var viewModel: LoginViewModel
