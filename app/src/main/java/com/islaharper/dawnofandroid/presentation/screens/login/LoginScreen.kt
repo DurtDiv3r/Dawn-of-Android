@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -14,9 +15,9 @@ fun LoginScreen(
     navHostController: NavHostController,
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val signedInState by loginViewModel.signedInState
-    val messageBarState by loginViewModel.messageBarState
-    val apiResponse by loginViewModel.apiResponse
+    val signedInState by loginViewModel.signedInState.collectAsState()
+    val messageBarState by loginViewModel.messageBarState.collectAsState()
+    val apiResponse by loginViewModel.apiResponse.collectAsState()
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.surface,
