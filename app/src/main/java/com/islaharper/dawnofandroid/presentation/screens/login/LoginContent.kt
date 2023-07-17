@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +38,14 @@ fun LoginContent(
             modifier = modifier
                 .weight(1f),
         ) {
-            MessageBar(messageBarState = messageBarState)
+            if (signedInState) {
+                LinearProgressIndicator(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            } else {
+                MessageBar(messageBarState = messageBarState)
+            }
         }
         Column(
             modifier = modifier

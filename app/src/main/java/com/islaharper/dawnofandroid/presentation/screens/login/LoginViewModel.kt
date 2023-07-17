@@ -52,16 +52,12 @@ class LoginViewModel @Inject constructor(
     }
 
     fun verifyToken(apiRequest: ApiTokenRequest) {
-        _apiResponse.value = Resource.Loading
         viewModelScope.launch {
             verifyTokenUseCase.invoke(request = apiRequest).collect { response ->
                 _apiResponse.value = response
 
                 when (response) {
                     is Resource.Idle -> {
-                    }
-
-                    is Resource.Loading -> {
                     }
 
                     is Resource.Success -> {
