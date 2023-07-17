@@ -46,7 +46,7 @@ fun LoginScreen(
     StartActivityForResult(
         key = signedInState,
         onResultReceived = { tokenId ->
-            loginViewModel.verifyTokenOnBackend(
+            loginViewModel.verifyToken(
                 apiRequest = ApiTokenRequest(tokenId = tokenId),
             )
         },
