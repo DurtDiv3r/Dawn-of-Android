@@ -12,6 +12,7 @@ object Constants {
     // Room DB
     const val FLAVOUR_DB = "flavour_db"
     const val FLAVOUR_DB_TABLE = "flavour_table"
+    const val REMOTE_KEYS_TABLE = "flavour_remote_keys_table"
 
     // PREFS
     const val PREFS_NAME = "app_preferences"
