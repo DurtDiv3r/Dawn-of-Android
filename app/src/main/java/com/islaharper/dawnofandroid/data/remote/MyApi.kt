@@ -17,6 +17,9 @@ interface MyApi {
     @DELETE("/delete_user")
     suspend fun deleteUser(): ApiResponse
 
+    @GET("/sign_out")
+    suspend fun clearSession(): ApiResponse
+
     // Get all android flavours
     @GET("/get_all_flavours")
     suspend fun getAllFlavours(@Query("page") page: Int = 1): ApiResponse

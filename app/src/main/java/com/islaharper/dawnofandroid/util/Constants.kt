@@ -24,4 +24,6 @@ object Constants {
     // OnBoarding
     const val ONBOARDING_PAGE_COUNT = 3
     const val ONBOARDING_LAST_PAGE = 2
+
+    const val ITEMS_PER_PAGE = 5
 }
