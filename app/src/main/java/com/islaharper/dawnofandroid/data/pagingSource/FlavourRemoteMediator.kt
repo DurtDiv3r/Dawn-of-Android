@@ -1,6 +1,5 @@
 package com.islaharper.dawnofandroid.data.pagingSource
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -24,14 +23,7 @@ class FlavourRemoteMediator(
 
     override suspend fun initialize(): InitializeAction {
         val currentTime = System.currentTimeMillis()
-        var lastUpdated = 0L
-        try {
-            remoteKeysDao.getRemoteKeys(id = 1).lastUpdate?.let {
-                lastUpdated = it
-            }
-        } catch (e: Exception) {
-            Log.d("RemoteMediator", "Exception : {${e.message}")
-        }
+        val lastUpdated = remoteKeysDao.getRemoteKeys(id = 1).lastUpdate ?: 0L
         val cacheTimeout = 1440
 
         val diffInMinutes = (currentTime - lastUpdated) / 1000 / 60
@@ -49,12 +41,12 @@ class FlavourRemoteMediator(
         return try {
             val page = when (loadType) {
                 LoadType.REFRESH -> {
-                    val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
+                    val remoteKeys = state.getRemoteKeyClosestToCurrentPosition()
                     remoteKeys?.nextPage?.minus(1) ?: 1
                 }
 
                 LoadType.PREPEND -> {
-                    val remoteKeys = getRemoteKeyForFirstItem(state)
+                    val remoteKeys = state.getRemoteKeyForFirstItem()
                     val prevPage = remoteKeys?.prevPage
                         ?: return MediatorResult.Success(
                             endOfPaginationReached = remoteKeys != null,
@@ -63,7 +55,7 @@ class FlavourRemoteMediator(
                 }
 
                 LoadType.APPEND -> {
-                    val remoteKeys = getRemoteKeyForLastItem(state)
+                    val remoteKeys = state.getRemoteKeyForLastItem()
                     val nextPage = remoteKeys?.nextPage
                         ?: return MediatorResult.Success(
                             endOfPaginationReached = remoteKeys != null,
@@ -110,27 +102,27 @@ class FlavourRemoteMediator(
         }
     }
 
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, Flavour>): RemoteKeys? {
-        return state.anchorPosition?.let { position ->
-            state.closestItemToPosition(position)?.id?.let { id ->
+    private suspend fun PagingState<Int, Flavour>.getRemoteKeyClosestToCurrentPosition(): RemoteKeys? {
+        return anchorPosition?.let { position ->
+            closestItemToPosition(position)?.id?.let { id ->
                 remoteKeysDao.getRemoteKeys(id = id)
             }
         }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, Flavour>): RemoteKeys? {
-        return state.pages.firstOrNull {
+    private suspend fun PagingState<Int, Flavour>.getRemoteKeyForFirstItem(): RemoteKeys? {
+        return pages.firstOrNull {
             it.data.isNotEmpty()
-        }?.data?.firstOrNull()?.let { book ->
-            remoteKeysDao.getRemoteKeys(id = book.id)
+        }?.data?.firstOrNull()?.let { flavour ->
+            remoteKeysDao.getRemoteKeys(id = flavour.id)
         }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, Flavour>): RemoteKeys? {
-        return state.pages.lastOrNull {
+    private suspend fun PagingState<Int, Flavour>.getRemoteKeyForLastItem(): RemoteKeys? {
+        return pages.lastOrNull {
             it.data.isNotEmpty()
-        }?.data?.lastOrNull()?.let { book ->
-            remoteKeysDao.getRemoteKeys(id = book.id)
+        }?.data?.lastOrNull()?.let { flavour ->
+            remoteKeysDao.getRemoteKeys(id = flavour.id)
         }
     }
 
