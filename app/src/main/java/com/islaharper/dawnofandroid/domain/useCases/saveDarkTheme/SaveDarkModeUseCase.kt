@@ -1,10 +1,7 @@
 package com.islaharper.dawnofandroid.domain.useCases.saveDarkTheme
 
-import com.islaharper.dawnofandroid.data.repository.Repository
-import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class SaveDarkModeUseCase @Inject constructor(private val repository: Repository) {
-    suspend operator fun invoke(isDarkMode: Boolean) {
-        repository.saveDarkModeState(isDarkMode = isDarkMode)
-    }
+interface SaveDarkModeUseCase {
+    suspend operator fun invoke(isDarkMode: Boolean): Flow<Boolean>
 }

@@ -5,5 +5,5 @@ import com.islaharper.dawnofandroid.domain.model.Flavour
 import kotlinx.coroutines.flow.Flow
 
 interface GetAllFlavoursUseCase {
-    suspend operator fun invoke(): Flow<PagingData<Flavour>>
+    operator fun invoke(): Flow<PagingData<Flavour>>
 }

@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class GetAllFlavoursUseCaseImpl @Inject constructor(private val repository: Repository) :
     GetAllFlavoursUseCase {
-    override suspend fun invoke(): Flow<PagingData<Flavour>> {
+    override fun invoke(): Flow<PagingData<Flavour>> {
         return repository.getAllFlavours()
     }
 }

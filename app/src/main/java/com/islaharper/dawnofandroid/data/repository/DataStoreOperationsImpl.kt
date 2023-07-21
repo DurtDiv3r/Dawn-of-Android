@@ -36,16 +36,18 @@ class DataStoreOperationsImpl @Inject constructor(
         val signedInKey = booleanPreferencesKey(name = PREFS_SIGNED_IN_KEY)
     }
 
-    override suspend fun saveDarkModeState(isDarkMode: Boolean) {
+    override suspend fun saveDarkModeState(isDarkMode: Boolean): Boolean {
         dataStore.edit { preferences ->
             preferences[PrefsDarkModeKey.darkModeKey] = isDarkMode
         }
+        return isDarkMode
     }
 
-    override suspend fun saveDynamicThemeState(isDynamicTheme: Boolean) {
+    override suspend fun saveDynamicThemeState(isDynamicTheme: Boolean): Boolean {
         dataStore.edit { preferences ->
             preferences[PrefsDynamicThemeKey.dynamicThemeKey] = isDynamicTheme
         }
+        return isDynamicTheme
     }
 
     override suspend fun saveOnBoardingState(isComplete: Boolean) {
