@@ -11,26 +11,18 @@ class SearchFlavoursSource(private val api: MyApi, private val query: String) :
     PagingSource<Int, Flavour>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Flavour> {
         return try {
-            val response = getFlavours(query = query)
-            if (response is Resource.Success) {
-                val flavours = response.data.flavours
-                if (flavours?.isNotEmpty() == true) {
+            when (val response = getFlavours(query = query)) {
+                is Resource.Success -> {
+                    val flavours = response.data.flavours.orEmpty()
                     LoadResult.Page(
                         data = flavours,
                         prevKey = response.data.prevPage,
                         nextKey = response.data.nextPage,
                     )
-                } else {
-                    LoadResult.Page(
-                        data = emptyList(),
-                        prevKey = null,
-                        nextKey = null,
-                    )
                 }
-            } else if (response is Resource.Error) {
-                LoadResult.Error(response.ex ?: Exception())
-            } else {
-                LoadResult.Error(Exception())
+
+                is Resource.Error -> LoadResult.Error(response.ex ?: Exception())
+                else -> LoadResult.Error(Exception())
             }
         } catch (ex: Exception) {
             return LoadResult.Error(ex)
