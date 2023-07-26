@@ -37,8 +37,8 @@ import com.islaharper.dawnofandroid.ui.theme.Shapes
 fun GoogleButton(
     modifier: Modifier = Modifier,
     loadingState: Boolean = false,
-    primaryText: String = "Sign in with Google",
-    secondaryText: String = "Please wait...",
+    primaryText: String = stringResource(R.string.sign_in_with_google),
+    secondaryText: String = stringResource(R.string.please_wait),
     onClick: () -> Unit,
 ) {
     var buttonText by remember { mutableStateOf(primaryText) }

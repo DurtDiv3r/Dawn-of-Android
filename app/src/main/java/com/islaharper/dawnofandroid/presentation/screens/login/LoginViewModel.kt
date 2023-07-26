@@ -1,12 +1,15 @@
 package com.islaharper.dawnofandroid.presentation.screens.login
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
 import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
 import com.islaharper.dawnofandroid.domain.useCases.readSignedInState.ReadSignedInStateUseCase
 import com.islaharper.dawnofandroid.domain.useCases.saveSignedInState.SaveSignedInStateUseCase
+import com.islaharper.dawnofandroid.domain.useCases.signInClient.SignInClientUseCase
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCase
 import com.islaharper.dawnofandroid.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +26,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val readSignedInStateUseCase: ReadSignedInStateUseCase,
     private val saveSignedInStateUseCase: SaveSignedInStateUseCase,
+    private val signInClientUseCase: SignInClientUseCase,
     private val verifyTokenUseCase: VerifyTokenUseCase,
 ) : ViewModel() {
 
@@ -39,6 +43,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _signedInState.value = readSignedInStateUseCase().stateIn(viewModelScope).value
         }
+    }
+
+    fun getSignInClient(context: Context): SignInClient {
+        return signInClientUseCase(context)
     }
 
     fun saveSignedInState(signedIn: Boolean) {
