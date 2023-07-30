@@ -9,27 +9,25 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.islaharper.dawnofandroid.util.Constants.CLIENT_ID
 
 @Composable
 fun StartActivityForResult(
+    oneTapClient: SignInClient,
     key: Any,
     onResultReceived: (String) -> Unit,
     onDialogDismissed: () -> Unit,
     launcher: (ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) -> Unit,
 ) {
-    val activity = LocalContext.current as Activity
     val activityLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
     ) { result ->
         try {
             if (result.resultCode == Activity.RESULT_OK) {
-                val oneTapClient = Identity.getSignInClient(activity)
                 val credentials = oneTapClient.getSignInCredentialFromIntent(result.data)
                 val tokenId = credentials.googleIdToken
 
@@ -62,11 +60,10 @@ fun StartActivityForResult(
 }
 
 fun signIn(
-    activity: Activity,
+    oneTapClient: SignInClient,
     launchActivityResult: (IntentSenderRequest) -> Unit,
     accountNotFound: () -> Unit,
 ) {
-    val oneTapClient = Identity.getSignInClient(activity)
     val signInRequest = BeginSignInRequest.builder()
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
@@ -92,7 +89,7 @@ fun signIn(
         }
         .addOnFailureListener {
             signUp(
-                activity = activity,
+                oneTapClient = oneTapClient,
                 launchActivityResult = launchActivityResult,
                 accountNotFound = accountNotFound,
             )
@@ -100,11 +97,10 @@ fun signIn(
 }
 
 fun signUp(
-    activity: Activity,
+    oneTapClient: SignInClient,
     launchActivityResult: (IntentSenderRequest) -> Unit,
     accountNotFound: () -> Unit,
 ) {
-    val oneTapClient = Identity.getSignInClient(activity)
     val signInRequest = BeginSignInRequest.builder()
         .setGoogleIdTokenRequestOptions(
             BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
