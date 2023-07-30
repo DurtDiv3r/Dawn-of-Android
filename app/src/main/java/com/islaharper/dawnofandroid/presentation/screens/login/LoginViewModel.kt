@@ -1,9 +1,13 @@
 package com.islaharper.dawnofandroid.presentation.screens.login
 
-import android.content.Context
+import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.islaharper.dawnofandroid.data.repository.OneTapSignInResponse
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
 import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
@@ -24,10 +28,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    private val oneTapClient: SignInClient,
     private val readSignedInStateUseCase: ReadSignedInStateUseCase,
     private val saveSignedInStateUseCase: SaveSignedInStateUseCase,
-    private val signInClientUseCase: SignInClientUseCase,
     private val verifyTokenUseCase: VerifyTokenUseCase,
+    private val signInClientUseCase: SignInClientUseCase,
 ) : ViewModel() {
 
     private val _signedInState = MutableStateFlow(false)
@@ -39,14 +44,18 @@ class LoginViewModel @Inject constructor(
     private val _apiResponse = MutableStateFlow<Resource<ApiResponse>>(Resource.Idle)
     val apiResponse: StateFlow<Resource<ApiResponse>> = _apiResponse
 
+    var oneTapSignInResponse by mutableStateOf<OneTapSignInResponse>(Resource.Idle)
+        private set
+
     init {
         viewModelScope.launch {
             _signedInState.value = readSignedInStateUseCase().stateIn(viewModelScope).value
         }
     }
 
-    fun getSignInClient(context: Context): SignInClient {
-        return signInClientUseCase(context)
+    fun oneTapSignIn() = viewModelScope.launch {
+        _signedInState.value = saveSignedInStateUseCase(true).stateIn(viewModelScope).value
+        oneTapSignInResponse = signInClientUseCase.invoke()
     }
 
     fun saveSignedInState(signedIn: Boolean) {
@@ -59,43 +68,48 @@ class LoginViewModel @Inject constructor(
         _messageBarState.value = MessageBarState.Failure(message = errorMessage)
     }
 
-    fun verifyToken(apiRequest: ApiTokenRequest) {
-        viewModelScope.launch {
-            verifyTokenUseCase.invoke(request = apiRequest).collect { response ->
-                _apiResponse.value = response
+    fun verifyToken(intent: Intent?) {
+        val credentials = oneTapClient.getSignInCredentialFromIntent(intent)
+        val tokenId = credentials.googleIdToken
+        if (tokenId != null) {
+            viewModelScope.launch {
+                verifyTokenUseCase.invoke(request = ApiTokenRequest(tokenId = tokenId))
+                    .collect { response ->
+                        _apiResponse.value = response
 
-                when (response) {
-                    is Resource.Idle -> {
+                        when (response) {
+                            is Resource.Idle -> {
+                            }
+
+                            is Resource.Success -> {
+                                _messageBarState.value = MessageBarState.Success(
+                                    message = "Successfully Signed In",
+                                )
+                            }
+
+                            is Resource.Error -> {
+                                _messageBarState.value = MessageBarState.Failure(
+                                    message = when (response.ex) {
+                                        is SocketTimeoutException -> {
+                                            "Connection Timeout Exception"
+                                        }
+
+                                        is ConnectException -> {
+                                            "Internet Connection Unavailable"
+                                        }
+
+                                        is IOException -> {
+                                            "Server Unreachable"
+                                        }
+
+                                        else -> {
+                                            response.ex?.message ?: "Unknown Error"
+                                        }
+                                    },
+                                )
+                            }
+                        }
                     }
-
-                    is Resource.Success -> {
-                        _messageBarState.value = MessageBarState.Success(
-                            message = "Successfully Signed In",
-                        )
-                    }
-
-                    is Resource.Error -> {
-                        _messageBarState.value = MessageBarState.Failure(
-                            message = when (response.ex) {
-                                is SocketTimeoutException -> {
-                                    "Connection Timeout Exception"
-                                }
-
-                                is ConnectException -> {
-                                    "Internet Connection Unavailable"
-                                }
-
-                                is IOException -> {
-                                    "Server Unreachable"
-                                }
-
-                                else -> {
-                                    response.ex?.message ?: "Unknown Error"
-                                }
-                            },
-                        )
-                    }
-                }
             }
         }
     }

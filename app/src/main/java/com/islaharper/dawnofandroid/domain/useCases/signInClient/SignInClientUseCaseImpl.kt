@@ -1,13 +1,12 @@
 package com.islaharper.dawnofandroid.domain.useCases.signInClient
 
-import android.content.Context
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.islaharper.dawnofandroid.data.repository.Repository
+import com.islaharper.dawnofandroid.data.repository.OneTapSignInResponse
+import com.islaharper.dawnofandroid.domain.repository.AuthRepository
 import javax.inject.Inject
 
-class SignInClientUseCaseImpl @Inject constructor(private val repository: Repository) :
+class SignInClientUseCaseImpl @Inject constructor(private val repository: AuthRepository) :
     SignInClientUseCase {
-    override operator fun invoke(context: Context): SignInClient {
-        return repository.getSignInClient(context = context)
+    override suspend operator fun invoke(): OneTapSignInResponse {
+        return repository.oneTapSignIn()
     }
 }
