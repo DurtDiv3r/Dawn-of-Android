@@ -1,8 +1,5 @@
 package com.islaharper.dawnofandroid.data.repository
 
-import android.content.Context
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
 import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.repository.DataStoreOperations
@@ -55,9 +52,5 @@ class Repository @Inject constructor(
     // Verify token for access to authorised endpoints
     suspend fun verifyToken(request: ApiTokenRequest): Resource<ApiResponse> {
         return remoteDataSource.verifyToken(request)
-    }
-
-    fun getSignInClient(context: Context): SignInClient {
-        return Identity.getSignInClient(context)
     }
 }
