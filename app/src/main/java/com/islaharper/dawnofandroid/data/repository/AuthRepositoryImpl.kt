@@ -7,20 +7,18 @@ import com.islaharper.dawnofandroid.domain.repository.AuthRepository
 import com.islaharper.dawnofandroid.util.Constants.SIGN_IN_REQUEST
 import com.islaharper.dawnofandroid.util.Constants.SIGN_UP_REQUEST
 import com.islaharper.dawnofandroid.util.Resource
-import kotlinx.coroutines.tasks.await
 import javax.inject.Named
-
-typealias OneTapSignInResponse = Resource<BeginSignInResult>
+import kotlinx.coroutines.tasks.await
 
 class AuthRepositoryImpl(
     private var oneTapClient: SignInClient,
     @Named(SIGN_IN_REQUEST)
     private var signInRequest: BeginSignInRequest,
     @Named(SIGN_UP_REQUEST)
-    private var signUpRequest: BeginSignInRequest,
+    private var signUpRequest: BeginSignInRequest
 ) : AuthRepository {
 
-    override suspend fun oneTapSignIn(): OneTapSignInResponse {
+    override suspend fun oneTapSignIn(): Resource<BeginSignInResult> {
         return try {
             val signInResult = oneTapClient.beginSignIn(signInRequest).await()
             Resource.Success(signInResult)
