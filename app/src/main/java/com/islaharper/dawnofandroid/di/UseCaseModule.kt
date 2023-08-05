@@ -4,6 +4,8 @@ import com.islaharper.dawnofandroid.domain.useCases.readSignedInState.ReadSigned
 import com.islaharper.dawnofandroid.domain.useCases.readSignedInState.ReadSignedInStateUseCaseImpl
 import com.islaharper.dawnofandroid.domain.useCases.saveSignedInState.SaveSignedInStateUseCase
 import com.islaharper.dawnofandroid.domain.useCases.saveSignedInState.SaveSignedInStateUseCaseImpl
+import com.islaharper.dawnofandroid.domain.useCases.signInClient.SignInClientUseCase
+import com.islaharper.dawnofandroid.domain.useCases.signInClient.SignInClientUseCaseImpl
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCase
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCaseImpl
 import dagger.Binds
@@ -20,6 +22,9 @@ abstract class UseCaseModule {
 
     @Binds
     abstract fun provideSaveSignedInStateUseCase(useCase: SaveSignedInStateUseCaseImpl): SaveSignedInStateUseCase
+
+    @Binds
+    abstract fun provideSignInClientUseCase(useCase: SignInClientUseCaseImpl): SignInClientUseCase
 
     @Binds
     abstract fun provideVerifyTokenUseCase(useCase: VerifyTokenUseCaseImpl): VerifyTokenUseCase

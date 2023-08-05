@@ -1,10 +1,13 @@
 package com.islaharper.dawnofandroid.util
 
+import com.islaharper.dawnofandroid.BuildConfig
+
 object Constants {
 
     // BACKEND
     // Using Localhost for testing
     const val BASE_URL = "http://127.0.0.1:8080"
+    const val CLIENT_ID = BuildConfig.CLIENT_ID
 
     // Room DB
     const val FLAVOUR_DB = "flavour_db"
@@ -20,4 +23,8 @@ object Constants {
     // OnBoarding
     const val ONBOARDING_PAGE_COUNT = 3
     const val ONBOARDING_LAST_PAGE = 2
+
+    // Names
+    const val SIGN_IN_REQUEST = "signInRequest"
+    const val SIGN_UP_REQUEST = "signUpRequest"
 }
