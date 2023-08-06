@@ -24,4 +24,8 @@ object Constants {
     // OnBoarding
     const val ONBOARDING_PAGE_COUNT = 3
     const val ONBOARDING_LAST_PAGE = 2
+
+    // Names
+    const val SIGN_IN_REQUEST = "signInRequest"
+    const val SIGN_UP_REQUEST = "signUpRequest"
 }

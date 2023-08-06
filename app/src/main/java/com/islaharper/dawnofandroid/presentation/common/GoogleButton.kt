@@ -37,10 +37,10 @@ import com.islaharper.dawnofandroid.ui.theme.Shapes
 fun GoogleButton(
     modifier: Modifier = Modifier,
     loadingState: Boolean = false,
-    primaryText: String = "Sign in with Google",
-    secondaryText: String = "Please wait...",
     onClick: () -> Unit,
 ) {
+    val primaryText = stringResource(R.string.sign_in_with_google)
+    val secondaryText = stringResource(R.string.please_wait)
     var buttonText by remember { mutableStateOf(primaryText) }
 
     LaunchedEffect(key1 = loadingState) {
@@ -117,6 +117,5 @@ fun GoogleButtonPreview() {
 fun GoogleButtonLoadingPreview() {
     GoogleButton(
         loadingState = true,
-        primaryText = "Please wait...",
     ) {}
 }
