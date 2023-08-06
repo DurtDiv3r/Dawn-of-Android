@@ -38,7 +38,6 @@ import com.islaharper.dawnofandroid.navigation.Screen
 import com.islaharper.dawnofandroid.presentation.common.GoogleButton
 import com.islaharper.dawnofandroid.presentation.components.MessageBar
 import com.islaharper.dawnofandroid.util.Resource
-import com.islaharper.dawnofandroid.util.Resource.Success
 
 @Composable
 fun LoginScreen(
@@ -102,8 +101,8 @@ fun LoginScreen(
 
     LaunchedEffect(key1 = apiResponse) {
         when (apiResponse) {
-            is Success -> {
-                val response = (apiResponse as Success<ApiResponse>).data.success
+            is Resource.Success -> {
+                val response = (apiResponse as Resource.Success<ApiResponse>).data.success
                 if (response) {
                     navigateToHomeScreen(navController = navHostController)
                     loginViewModel.saveSignedInState(signedIn = false)
@@ -111,7 +110,9 @@ fun LoginScreen(
                     loginViewModel.saveSignedInState(signedIn = false)
                 }
             }
-
+            is Resource.Error -> {
+                loginViewModel.saveSignedInState(signedIn = false)
+            }
             else -> {}
         }
     }
@@ -123,10 +124,13 @@ fun OneTapSignIn(
     launch: (result: BeginSignInResult) -> Unit
 ) {
     when (val oneTapSignInResponse = viewModel.oneTapSignInResponse) {
-        is Resource.Idle,
-        is Resource.Error -> null
+        is Resource.Idle -> null
+        is Resource.Error -> {
+            viewModel.saveSignedInState(signedIn = false)
+            viewModel.updateMessageBarErrorState(stringResource(R.string.google_account_not_found))
+        }
 
-        is Success -> oneTapSignInResponse.data.let {
+        is Resource.Success -> oneTapSignInResponse.data.let {
             LaunchedEffect(key1 = it) {
                 launch(it)
             }
