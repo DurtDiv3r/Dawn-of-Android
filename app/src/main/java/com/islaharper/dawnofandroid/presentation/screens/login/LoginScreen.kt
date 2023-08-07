@@ -30,7 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.CommonStatusCodes
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
@@ -72,19 +71,7 @@ fun LoginScreen(
                 loginViewModel.saveSignedInState(signedIn = false)
             }
         } catch (e: ApiException) {
-            when (e.statusCode) {
-                CommonStatusCodes.CANCELED -> {
-                    loginViewModel.saveSignedInState(signedIn = false)
-                }
-
-                CommonStatusCodes.NETWORK_ERROR -> {
-                    loginViewModel.saveSignedInState(signedIn = false)
-                }
-
-                else -> {
-                    loginViewModel.saveSignedInState(signedIn = false)
-                }
-            }
+            loginViewModel.saveSignedInState(signedIn = false)
         }
     }
 
