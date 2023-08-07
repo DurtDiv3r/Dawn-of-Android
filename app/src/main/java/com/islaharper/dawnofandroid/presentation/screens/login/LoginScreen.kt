@@ -110,9 +110,11 @@ fun LoginScreen(
                     loginViewModel.saveSignedInState(signedIn = false)
                 }
             }
+
             is Resource.Error -> {
                 loginViewModel.saveSignedInState(signedIn = false)
             }
+
             else -> {}
         }
     }

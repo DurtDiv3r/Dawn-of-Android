@@ -10,7 +10,7 @@ fun HomeScreen(
     navHostController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
     onThemeUpdated: () -> Unit,
-    onDynamicUpdated: () -> Unit,
+    onDynamicUpdated: () -> Unit
 ) {
     Text(text = "Homescreen Placeholder")
 }

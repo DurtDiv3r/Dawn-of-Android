@@ -13,32 +13,32 @@ import com.islaharper.dawnofandroid.presentation.screens.welcome.WelcomeScreen
 fun DawnNavHost(
     navController: NavHostController,
     onThemeUpdated: () -> Unit,
-    onDynamicUpdated: () -> Unit,
+    onDynamicUpdated: () -> Unit
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
+        startDestination = Screen.Splash.route
     ) {
         composable(route = Screen.Splash.route) {
             SplashScreen(
-                navHostController = navController,
+                navHostController = navController
             )
         }
         composable(route = Screen.Welcome.route) {
             WelcomeScreen(
-                navHostController = navController,
+                navHostController = navController
             )
         }
         composable(route = Screen.Login.route) {
             LoginScreen(
-                navHostController = navController,
+                navHostController = navController
             )
         }
         composable(route = Screen.Home.route) {
             HomeScreen(
                 navHostController = navController,
                 onThemeUpdated = onThemeUpdated,
-                onDynamicUpdated = onDynamicUpdated,
+                onDynamicUpdated = onDynamicUpdated
             )
         }
     }
