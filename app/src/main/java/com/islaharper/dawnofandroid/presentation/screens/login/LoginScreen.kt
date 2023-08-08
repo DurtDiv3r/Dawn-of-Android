@@ -31,12 +31,13 @@ import androidx.navigation.NavHostController
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.common.api.ApiException
 import com.islaharper.dawnofandroid.R
-import com.islaharper.dawnofandroid.domain.model.ApiResponse
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
 import com.islaharper.dawnofandroid.navigation.Screen
 import com.islaharper.dawnofandroid.presentation.common.GoogleButton
 import com.islaharper.dawnofandroid.presentation.components.MessageBar
 import com.islaharper.dawnofandroid.util.Resource
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -45,6 +46,7 @@ fun LoginScreen(
 ) {
     val signedInState by loginViewModel.signedInState.collectAsState()
     val messageBarState by loginViewModel.messageBarState.collectAsState()
+    val navigationState by loginViewModel.navigationState.collectAsState()
     val apiResponse by loginViewModel.apiResponse.collectAsState()
 
     Scaffold(
@@ -75,34 +77,23 @@ fun LoginScreen(
         }
     }
 
-    fun launch(signInResult: BeginSignInResult) {
-        val intent = IntentSenderRequest.Builder(signInResult.pendingIntent.intentSender).build()
-        launcher.launch(intent)
-    }
-
     OneTapSignIn(
         launch = {
-            launch(it)
+            val intent = IntentSenderRequest.Builder(it.pendingIntent.intentSender).build()
+            launcher.launch(intent)
         }
     )
 
     LaunchedEffect(key1 = apiResponse) {
-        when (apiResponse) {
-            is Resource.Success -> {
-                val response = (apiResponse as Resource.Success<ApiResponse>).data.success
-                if (response) {
-                    navigateToHomeScreen(navController = navHostController)
-                    loginViewModel.saveSignedInState(signedIn = false)
-                } else {
-                    loginViewModel.saveSignedInState(signedIn = false)
-                }
+        if (navigationState) {
+            launch {
+                // Allow time to display success messageBar
+                delay(1500L)
+                navigateToHomeScreen(navController = navHostController)
             }
-
-            is Resource.Error -> {
-                loginViewModel.saveSignedInState(signedIn = false)
-            }
-
-            else -> {}
+            loginViewModel.saveSignedInState(signedIn = false)
+        } else {
+            loginViewModel.saveSignedInState(signedIn = false)
         }
     }
 }

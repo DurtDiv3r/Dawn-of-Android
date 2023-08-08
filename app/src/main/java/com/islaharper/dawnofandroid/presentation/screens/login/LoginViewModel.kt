@@ -44,6 +44,9 @@ class LoginViewModel @Inject constructor(
     private val _apiResponse = MutableStateFlow<Resource<ApiResponse>>(Resource.Idle)
     val apiResponse: StateFlow<Resource<ApiResponse>> = _apiResponse
 
+    private val _navigationState = MutableStateFlow(false)
+    val navigationState: StateFlow<Boolean> = _navigationState
+
     var oneTapSignInResponse by mutableStateOf<Resource<BeginSignInResult>>(Resource.Idle)
         private set
 
@@ -82,6 +85,7 @@ class LoginViewModel @Inject constructor(
                             }
 
                             is Resource.Success -> {
+                                _navigationState.value = response.data.success
                                 _messageBarState.value = MessageBarState.Success(
                                     message = "Successfully Signed In"
                                 )
