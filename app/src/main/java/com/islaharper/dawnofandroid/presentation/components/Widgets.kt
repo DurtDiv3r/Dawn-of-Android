@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,12 +37,13 @@ import com.islaharper.dawnofandroid.ui.theme.TOP_BAR_HEIGHT
 
 @Composable
 fun ThemeSwitcher(
+    modifier: Modifier = Modifier,
     darkTheme: Boolean = false,
     onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .padding(
                 horizontal = 16.dp,
                 vertical = 10.dp
@@ -67,12 +67,13 @@ fun SearchWidget(
     text: String,
     onTextChanged: (String) -> Unit,
     onSearchClicked: (String) -> Unit,
-    onCloseClicked: () -> Unit
+    onCloseClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(TOP_BAR_HEIGHT),
         shadowElevation = AppBarDefaults.TopAppBarElevation,
@@ -87,15 +88,14 @@ fun SearchWidget(
             },
             placeholder = {
                 Text(
-                    text = "Search...",
+                    text = stringResource(R.string.search_placeholder),
                     modifier = Modifier.alpha(ContentAlpha.medium),
                     color = MaterialTheme.colorScheme.onPrimary,
                     style = MaterialTheme.typography.bodyLarge
                 )
             },
-            textStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.onPrimary
             ),
             singleLine = true,
             leadingIcon = {
@@ -165,14 +165,12 @@ fun ThemeSwitcherDarkPreview() {
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SearchWidgetPreview() {
-    SearchWidget(text = "", onTextChanged = {}, onSearchClicked = {}) {
-    }
+    SearchWidget(text = "", onTextChanged = {}, onSearchClicked = {}, onCloseClicked = {})
 }
 
 @Preview(name = "Light")
 @Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SearchWidgetTextPreview() {
-    SearchWidget(text = "Some Text", onTextChanged = {}, onSearchClicked = {}) {
-    }
+    SearchWidget(text = "Some Text", onTextChanged = {}, onSearchClicked = {}, onCloseClicked = {})
 }

@@ -19,4 +19,6 @@
     <string name="night_mode">🌘</string>
     <string name="light_dark">Light/Dark</string>
     <string name="dynamic_theme">Dynamic Theme</string>
+    <string name="search_placeholder">Search...</string>
+    <string name="open_options">Open options</string>
 </resources>
