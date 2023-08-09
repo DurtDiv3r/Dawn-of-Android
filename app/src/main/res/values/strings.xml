@@ -12,5 +12,11 @@
     <string name="sign_in_description">Sign in to continue</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="please_wait">Please wait...</string>
-
+    <string name="google_account_not_found">Google Account not found.</string>
+    <string name="search_icon">Search Icon</string>
+    <string name="close_icon">Close Icon</string>
+    <string name="day_mode">☀️</string>
+    <string name="night_mode">🌘</string>
+    <string name="light_dark">Light/Dark</string>
+    <string name="dynamic_theme">Dynamic Theme</string>
 </resources>
