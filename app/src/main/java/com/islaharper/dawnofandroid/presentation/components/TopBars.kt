@@ -33,7 +33,8 @@ fun AppTopBar(
     dynamicTheme: Boolean,
     onSearchClicked: () -> Unit,
     onThemeSwitchClicked: () -> Unit,
-    onDynamicSwitchClicked: () -> Unit
+    onDynamicSwitchClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -59,12 +60,12 @@ fun AppTopBar(
             }) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Open Options",
+                    contentDescription = stringResource(R.string.open_options),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
             DropdownMenu(
-                modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer),
+                modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer),
                 expanded = expanded,
                 onDismissRequest = {
                     expanded = false
@@ -121,6 +122,7 @@ private fun AppTopBarPreview() {
         darkTheme = false,
         dynamicTheme = false,
         onSearchClicked = {},
-        onThemeSwitchClicked = {}
-    ) {}
+        onThemeSwitchClicked = {},
+        onDynamicSwitchClicked = {}
+    )
 }
