@@ -75,7 +75,7 @@ fun SearchWidget(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(R.string.search_icon),
+                        contentDescription = stringResource(R.string.search_icon_content_desc),
                         tint = MaterialTheme.colorScheme.onPrimary
 
                     )
@@ -93,7 +93,7 @@ fun SearchWidget(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(R.string.close_icon),
+                        contentDescription = stringResource(R.string.close_icon_content_desc),
                         tint = MaterialTheme.colorScheme.onPrimary
 
                     )
