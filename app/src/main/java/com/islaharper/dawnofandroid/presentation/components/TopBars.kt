@@ -3,6 +3,7 @@ package com.islaharper.dawnofandroid.presentation.components
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 
 @Composable
 fun SearchTopBar(
@@ -19,21 +20,30 @@ fun SearchTopBar(
     )
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SearchTopBarPreview() {
-    SearchWidget(text = "", onTextChanged = {}, onSearchClicked = {}, onCloseClicked = {})
+    DawnOfAndroidTheme {
+        SearchWidget(
+            text = "",
+            onTextChanged = {},
+            onSearchClicked = {},
+            onCloseClicked = {}
+        )
+    }
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SearchTopBarTextPreview() {
-    SearchWidget(
-        text = "Searched Text",
-        onTextChanged = {},
-        onSearchClicked = {},
-        onCloseClicked = {}
-    )
+    DawnOfAndroidTheme {
+        SearchWidget(
+            text = "Searched Text",
+            onTextChanged = {},
+            onSearchClicked = {},
+            onCloseClicked = {}
+        )
+    }
 }

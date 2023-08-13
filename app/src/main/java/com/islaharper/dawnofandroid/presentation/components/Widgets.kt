@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.islaharper.dawnofandroid.R
+import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.TOP_BAR_HEIGHT
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,16 +116,30 @@ fun SearchWidget(
     }
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SearchWidgetPreview() {
-    SearchWidget(text = "", onTextChanged = {}, onSearchClicked = {}, onCloseClicked = {})
+    DawnOfAndroidTheme {
+        SearchWidget(
+            text = "",
+            onTextChanged = {},
+            onSearchClicked = {},
+            onCloseClicked = {}
+        )
+    }
 }
 
-@Preview(name = "Light")
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun SearchWidgetTextPreview() {
-    SearchWidget(text = "Some Text", onTextChanged = {}, onSearchClicked = {}, onCloseClicked = {})
+    DawnOfAndroidTheme {
+        SearchWidget(
+            text = "Some Text",
+            onTextChanged = {},
+            onSearchClicked = {},
+            onCloseClicked = {}
+        )
+    }
 }
