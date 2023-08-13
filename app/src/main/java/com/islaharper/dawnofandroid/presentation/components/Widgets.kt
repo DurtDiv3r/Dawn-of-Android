@@ -21,7 +21,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -109,7 +108,7 @@ fun SearchWidget(
                 }
             ),
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.primary,
                 cursorColor = MaterialTheme.colorScheme.onPrimary
             )
         )
