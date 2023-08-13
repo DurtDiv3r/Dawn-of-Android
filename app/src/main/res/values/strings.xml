@@ -12,5 +12,7 @@
     <string name="sign_in_description">Sign in to continue</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="please_wait">Please wait...</string>
-
+    <string name="search_icon">Search Icon</string>
+    <string name="close_icon">Close Icon</string>
+    <string name="search_placeholder">Search...</string>
 </resources>
