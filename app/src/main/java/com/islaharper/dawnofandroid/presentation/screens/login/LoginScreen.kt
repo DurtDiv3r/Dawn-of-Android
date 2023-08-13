@@ -16,7 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -32,12 +31,11 @@ import com.islaharper.dawnofandroid.presentation.components.MessageBar
 @Composable
 fun LoginScreen(
     navHostController: NavHostController,
-    loginViewModel: LoginViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val signedInState by loginViewModel.signedInState.collectAsState()
     val messageBarState by loginViewModel.messageBarState.collectAsState()
     val apiResponse by loginViewModel.apiResponse.collectAsState()
-    val oneTapClient = loginViewModel.getSignInClient(LocalContext.current)
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.surface,
@@ -48,9 +46,9 @@ fun LoginScreen(
                 messageBarState = messageBarState,
                 onButtonClicked = {
                     loginViewModel.saveSignedInState(signedIn = true)
-                },
+                }
             )
-        },
+        }
     )
 }
 
@@ -59,20 +57,20 @@ private fun LoginContent(
     modifier: Modifier = Modifier,
     signedInState: Boolean,
     messageBarState: MessageBarState,
-    onButtonClicked: () -> Unit,
+    onButtonClicked: () -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = modifier
-                .weight(1f),
+                .weight(1f)
         ) {
             if (signedInState) {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             } else {
                 MessageBar(messageBarState = messageBarState)
@@ -83,11 +81,11 @@ private fun LoginContent(
                 .weight(9f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CentralContent(
                 signInState = signedInState,
-                onButtonClicked = onButtonClicked,
+                onButtonClicked = onButtonClicked
             )
         }
     }
@@ -96,19 +94,19 @@ private fun LoginContent(
 @Composable
 private fun CentralContent(
     signInState: Boolean,
-    onButtonClicked: () -> Unit,
+    onButtonClicked: () -> Unit
 ) {
     Image(
         modifier = Modifier
             .padding(bottom = 20.dp)
             .size(120.dp),
         painter = painterResource(id = R.drawable.ic_google_logo),
-        contentDescription = stringResource(R.string.google_logo),
+        contentDescription = stringResource(R.string.google_logo)
     )
     Text(
         text = stringResource(R.string.sign_in_welcome),
         color = MaterialTheme.colorScheme.onSurface,
-        style = MaterialTheme.typography.headlineLarge,
+        style = MaterialTheme.typography.headlineLarge
     )
     Text(
         text = stringResource(R.string.sign_in_description),
@@ -116,11 +114,11 @@ private fun CentralContent(
             .padding(bottom = 40.dp, top = 16.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = MaterialTheme.typography.bodyLarge,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
     GoogleButton(
         loadingState = signInState,
-        onClick = onButtonClicked,
+        onClick = onButtonClicked
     )
 }
 
@@ -131,6 +129,6 @@ fun LoginContentPreview() {
     LoginContent(
         signedInState = false,
         messageBarState = MessageBarState.Idle,
-        onButtonClicked = {},
+        onButtonClicked = {}
     )
 }
