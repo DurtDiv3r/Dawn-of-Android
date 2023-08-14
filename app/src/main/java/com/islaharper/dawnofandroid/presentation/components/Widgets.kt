@@ -175,6 +175,7 @@ fun SearchWidgetTextPreview() {
     }
 }
 
+@Preview(name = "Light", showBackground = true)
 @Composable
 fun ThemeSwitcherPreview() {
     DawnOfAndroidTheme {

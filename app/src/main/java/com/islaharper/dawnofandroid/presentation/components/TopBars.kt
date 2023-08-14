@@ -53,7 +53,7 @@ fun AppTopBar(
             IconButton(onClick = onSearchClicked) {
                 Icon(
                     Icons.Default.Search,
-                    contentDescription = stringResource(R.string.search_icon),
+                    contentDescription = stringResource(R.string.search_icon_content_desc),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -97,9 +97,25 @@ fun AppTopBar(
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary
         )
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
+    )
+}
+
+@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun AppTopBarPreview() {
+    DawnOfAndroidTheme {
+        Surface {
+            AppTopBar(
+                title = "Preview",
+                darkTheme = false,
+                dynamicTheme = false,
+                onSearchClicked = {},
+                onThemeSwitchClicked = {},
+                onDynamicSwitchClicked = {}
+            )
+        }
+    }
+}
 
 @Composable
 fun SearchTopBar(
@@ -141,22 +157,5 @@ fun SearchTopBarTextPreview() {
             onSearchClicked = {},
             onCloseClicked = {}
         )
-    }
-}
-
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-private fun AppTopBarPreview() {
-    DawnOfAndroidTheme {
-        Surface {
-            AppTopBar(
-                title = "Preview",
-                darkTheme = false,
-                dynamicTheme = false,
-                onSearchClicked = {},
-                onThemeSwitchClicked = {},
-                onDynamicSwitchClicked = {}
-            )
-        }
     }
 }
