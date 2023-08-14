@@ -1,8 +1,11 @@
 package com.islaharper.dawnofandroid.presentation.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AppBarDefaults
@@ -15,19 +18,48 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.TOP_BAR_HEIGHT
+
+@Composable
+fun ThemeSwitcher(
+    modifier: Modifier = Modifier,
+    darkTheme: Boolean = false,
+    onClick: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .padding(
+                horizontal = 16.dp,
+                vertical = 10.dp
+            ),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(stringResource(R.string.day_mode))
+        Switch(
+            checked = darkTheme,
+            onCheckedChange = {
+                onClick()
+            }
+        )
+        Text(stringResource(R.string.night_mode))
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,5 +172,26 @@ fun SearchWidgetTextPreview() {
             onSearchClicked = {},
             onCloseClicked = {}
         )
+    }
+}
+
+@Composable
+fun ThemeSwitcherPreview() {
+    DawnOfAndroidTheme {
+        Surface {
+            ThemeSwitcher {
+            }
+        }
+    }
+}
+
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun ThemeSwitcherDarkPreview() {
+    DawnOfAndroidTheme {
+        Surface {
+            ThemeSwitcher(darkTheme = true) {
+            }
+        }
     }
 }
