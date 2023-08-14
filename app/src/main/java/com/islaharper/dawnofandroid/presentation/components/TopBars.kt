@@ -53,7 +53,7 @@ fun AppTopBar(
             IconButton(onClick = onSearchClicked) {
                 Icon(
                     Icons.Default.Search,
-                    contentDescription = stringResource(R.string.search_icon),
+                    contentDescription = stringResource(R.string.search_icon_content_desc),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -100,7 +100,6 @@ fun AppTopBar(
     )
 }
 
-@Preview(name = "Light", showBackground = true)
 @Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun AppTopBarPreview() {
@@ -115,5 +114,48 @@ private fun AppTopBarPreview() {
                 onDynamicSwitchClicked = {}
             )
         }
+    }
+}
+
+@Composable
+fun SearchTopBar(
+    text: String,
+    onTextChanged: (String) -> Unit,
+    onSearchClicked: (String) -> Unit,
+    onCloseClicked: () -> Unit
+) {
+    SearchWidget(
+        text = text,
+        onTextChanged = onTextChanged,
+        onSearchClicked = onSearchClicked,
+        onCloseClicked = onCloseClicked
+    )
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SearchTopBarPreview() {
+    DawnOfAndroidTheme {
+        SearchWidget(
+            text = "",
+            onTextChanged = {},
+            onSearchClicked = {},
+            onCloseClicked = {}
+        )
+    }
+}
+
+@Preview(name = "Light", showBackground = true)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun SearchTopBarTextPreview() {
+    DawnOfAndroidTheme {
+        SearchWidget(
+            text = "Searched Text",
+            onTextChanged = {},
+            onSearchClicked = {},
+            onCloseClicked = {}
+        )
     }
 }
