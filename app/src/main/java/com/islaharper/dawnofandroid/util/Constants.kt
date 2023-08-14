@@ -27,4 +27,7 @@ object Constants {
     // Names
     const val SIGN_IN_REQUEST = "signInRequest"
     const val SIGN_UP_REQUEST = "signUpRequest"
+
+    const val STAR_FLOAT = 1.7f
+    const val STAR_PATH = "M14,21.288,21.416,26l-1.968-8.88L26,11.145l-8.628-.771L14,2l-3.372,8.375L2,11.145,8.552,17.12,6.584,26Z"
 }
