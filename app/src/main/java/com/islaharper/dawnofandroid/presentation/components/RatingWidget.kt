@@ -32,14 +32,12 @@ import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.LightStarBackgroundColour
 import com.islaharper.dawnofandroid.ui.theme.LightStarColour
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
-import com.islaharper.dawnofandroid.util.Constants.STAR_FLOAT
 import com.islaharper.dawnofandroid.util.Constants.STAR_PATH
 
 @Composable
 fun RatingWidget(
     rating: Double,
     modifier: Modifier = Modifier,
-    scaleFactor: Float = 3f,
     spaceBetween: Dp = PADDING_SMALL
 ) {
     val result = calculateRatingStars(rating = rating)
@@ -55,7 +53,6 @@ fun RatingWidget(
                 FilledStar(
                     starPath = starPath,
                     starBounds = starPathBounds,
-                    scaleFactor = scaleFactor,
                     starColour = if (isSystemInDarkTheme()) {
                         DarkStarColour
                     } else {
@@ -69,7 +66,6 @@ fun RatingWidget(
                 HalfFilledStar(
                     starPath = starPath,
                     starBounds = starPathBounds,
-                    scaleFactor = scaleFactor,
                     starColour = if (isSystemInDarkTheme()) DarkStarColour else LightStarColour,
                     starBackgroundColour = if (isSystemInDarkTheme()) {
                         DarkStarBackgroundColour
@@ -84,7 +80,6 @@ fun RatingWidget(
                 EmptyStar(
                     starPath = starPath,
                     starBounds = starPathBounds,
-                    scaleFactor = scaleFactor,
                     starBackgroundColour = if (isSystemInDarkTheme()) {
                         DarkStarBackgroundColour
                     } else {
@@ -96,21 +91,37 @@ fun RatingWidget(
     }
 }
 
+@Preview(name = "Light", showBackground = true)
+@Composable
+fun RatingWidgetPreview() {
+    DawnOfAndroidTheme {
+        Surface {
+            RatingWidget(rating = 2.5)
+        }
+    }
+}
+
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
+@Composable
+fun RatingWidgetDarkPreview() {
+    DawnOfAndroidTheme {
+        Surface {
+            RatingWidget(rating = 2.5)
+        }
+    }
+}
+
 @Composable
 fun FilledStar(
     starPath: Path,
     starBounds: Rect,
-    scaleFactor: Float,
     modifier: Modifier = Modifier,
     starColour: Color = LightStarColour
 ) {
-    Canvas(modifier = modifier.size(26.dp)) {
-        scale(scale = scaleFactor) {
-            val canvasSize = size
-            val pathWidth = starBounds.width
-            val pathHeight = starBounds.height
-            val left = (canvasSize.width / 2f) - (pathWidth / STAR_FLOAT)
-            val top = (canvasSize.height / 2f) - (pathHeight / STAR_FLOAT)
+    Canvas(modifier = modifier.size(24.dp)) {
+        scale(scale = size.maxDimension / starBounds.maxDimension) {
+            val left = (size.width / 2f) - (starBounds.width / 2f)
+            val top = (size.height / 2f) - (starBounds.height / 2f)
 
             translate(
                 left = left,
@@ -129,18 +140,15 @@ fun FilledStar(
 fun HalfFilledStar(
     starPath: Path,
     starBounds: Rect,
-    scaleFactor: Float,
     modifier: Modifier = Modifier,
     starColour: Color = LightStarColour,
     starBackgroundColour: Color = LightStarBackgroundColour
 ) {
-    Canvas(modifier = modifier.size(26.dp)) {
+    Canvas(modifier = modifier.size(24.dp)) {
+        val scaleFactor = size.maxDimension / starBounds.maxDimension
         scale(scale = scaleFactor) {
-            val canvasSize = size
-            val pathWidth = starBounds.width
-            val pathHeight = starBounds.height
-            val left = (canvasSize.width / 2f) - (pathWidth / STAR_FLOAT)
-            val top = (canvasSize.height / 2f) - (pathHeight / STAR_FLOAT)
+            val left = (size.width / 2f) - (starBounds.width / 2f)
+            val top = (size.height / 2f) - (starBounds.height / 2f)
 
             translate(
                 left = left,
@@ -154,8 +162,8 @@ fun HalfFilledStar(
                     drawRect(
                         color = starColour,
                         size = Size(
-                            width = starBounds.maxDimension / STAR_FLOAT,
-                            height = starBounds.maxDimension * scaleFactor
+                            width = starBounds.width / 1.95f,
+                            height = starBounds.height * scaleFactor
                         )
                     )
                 }
@@ -168,17 +176,13 @@ fun HalfFilledStar(
 fun EmptyStar(
     starPath: Path,
     starBounds: Rect,
-    scaleFactor: Float,
     modifier: Modifier = Modifier,
     starBackgroundColour: Color = LightStarBackgroundColour
 ) {
-    Canvas(modifier = modifier.size(26.dp)) {
-        scale(scale = scaleFactor) {
-            val canvasSize = size
-            val pathWidth = starBounds.width
-            val pathHeight = starBounds.height
-            val left = (canvasSize.width / 2f) - (pathWidth / STAR_FLOAT)
-            val top = (canvasSize.height / 2f) - (pathHeight / STAR_FLOAT)
+    Canvas(modifier = modifier.size(24.dp)) {
+        scale(scale = size.maxDimension / starBounds.maxDimension) {
+            val left = (size.width / 2f) - (starBounds.width / 2f)
+            val top = (size.height / 2f) - (starBounds.height / 2f)
 
             translate(
                 left = left,
@@ -243,8 +247,7 @@ fun FilledStarPreview() {
         Surface {
             FilledStar(
                 starPath = starPath,
-                starBounds = starPathBounds,
-                scaleFactor = 3f
+                starBounds = starPathBounds
             )
         }
     }
@@ -264,7 +267,6 @@ fun FilledStarDarkPreview() {
             FilledStar(
                 starPath = starPath,
                 starBounds = starPathBounds,
-                scaleFactor = 3f,
                 starColour = DarkStarColour
             )
         }
@@ -284,8 +286,7 @@ fun HalfFilledStarPreview() {
         Surface {
             HalfFilledStar(
                 starPath = starPath,
-                starBounds = starPathBounds,
-                scaleFactor = 3f
+                starBounds = starPathBounds
             )
         }
     }
@@ -305,7 +306,6 @@ fun HalfFilledStarDarkPreview() {
             HalfFilledStar(
                 starPath = starPath,
                 starBounds = starPathBounds,
-                scaleFactor = 3f,
                 starColour = DarkStarColour,
                 starBackgroundColour = DarkStarBackgroundColour
             )
@@ -326,8 +326,7 @@ fun EmptyStarPreview() {
         Surface {
             EmptyStar(
                 starPath = starPath,
-                starBounds = starPathBounds,
-                scaleFactor = 3f
+                starBounds = starPathBounds
             )
         }
     }
@@ -347,7 +346,6 @@ fun EmptyStarDarkPreview() {
             EmptyStar(
                 starPath = starPath,
                 starBounds = starPathBounds,
-                scaleFactor = 3f,
                 starBackgroundColour = DarkStarBackgroundColour
             )
         }

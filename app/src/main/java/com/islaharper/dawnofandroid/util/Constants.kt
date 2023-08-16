@@ -5,8 +5,10 @@ import com.islaharper.dawnofandroid.BuildConfig
 object Constants {
 
     // BACKEND
-    // Using Localhost for testing
+    /* Using Localhost for testing
     const val BASE_URL = "http://127.0.0.1:8080"
+     */
+    const val BASE_URL = "https://personalktorserver-73cb994b66ce.herokuapp.com/"
     const val CLIENT_ID = BuildConfig.CLIENT_ID
 
     // Room DB
@@ -28,6 +30,6 @@ object Constants {
     const val SIGN_IN_REQUEST = "signInRequest"
     const val SIGN_UP_REQUEST = "signUpRequest"
 
-    const val STAR_FLOAT = 1.7f
-    const val STAR_PATH = "M14,21.288,21.416,26l-1.968-8.88L26,11.145l-8.628-.771L14,2l-3.372,8.375L2,11.145,8.552,17.12,6.584,26Z"
+    // Rating Widget
+    const val STAR_PATH = "m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"
 }
