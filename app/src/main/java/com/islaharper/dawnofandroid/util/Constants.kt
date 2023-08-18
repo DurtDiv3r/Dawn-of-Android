@@ -6,7 +6,8 @@ object Constants {
 
     // BACKEND
     // Using Localhost for testing
-    const val BASE_URL = "http://127.0.0.1:8080"
+//    const val BASE_URL = "http://127.0.0.1:8080"
+    const val BASE_URL = "https://personalktorserver-73cb994b66ce.herokuapp.com/"
     const val CLIENT_ID = BuildConfig.CLIENT_ID
 
     // Room DB
@@ -23,8 +24,4 @@ object Constants {
     // OnBoarding
     const val ONBOARDING_PAGE_COUNT = 3
     const val ONBOARDING_LAST_PAGE = 2
-
-    // Names
-    const val SIGN_IN_REQUEST = "signInRequest"
-    const val SIGN_UP_REQUEST = "signUpRequest"
 }

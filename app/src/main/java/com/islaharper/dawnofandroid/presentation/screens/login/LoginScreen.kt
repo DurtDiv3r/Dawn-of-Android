@@ -1,5 +1,6 @@
 package com.islaharper.dawnofandroid.presentation.screens.login
 
+import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -7,11 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,16 +26,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
-import com.islaharper.dawnofandroid.presentation.common.GoogleButton
+import com.islaharper.dawnofandroid.navigation.Screen
+import com.islaharper.dawnofandroid.presentation.common.GoogleSignInButton
 import com.islaharper.dawnofandroid.presentation.components.MessageBar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
     navHostController: NavHostController,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-    val signedInState by loginViewModel.signedInState.collectAsState()
     val messageBarState by loginViewModel.messageBarState.collectAsState()
+    val navigationState by loginViewModel.navigationState.collectAsState()
     val apiResponse by loginViewModel.apiResponse.collectAsState()
 
     Scaffold(
@@ -42,50 +46,66 @@ fun LoginScreen(
         content = { contentPadding ->
             LoginContent(
                 modifier = Modifier.padding(contentPadding),
-                signedInState = signedInState,
                 messageBarState = messageBarState,
-                onButtonClicked = {
-                    loginViewModel.saveSignedInState(signedIn = true)
+                onSignInComplete = {
+                    loginViewModel.verifyToken(it)
+                },
+                onError = { errorMessage ->
+                    loginViewModel.updateMessageBarErrorState(errorMessage)
                 }
             )
         }
     )
+
+    LaunchedEffect(key1 = apiResponse) {
+        if (navigationState) {
+            launch {
+                // Allow time to display success messageBar
+                delay(1000L)
+                navigateToHomeScreen(navController = navHostController)
+            }
+        }
+    }
+}
+
+private fun navigateToHomeScreen(
+    navController: NavHostController
+) {
+    navController.navigate(route = Screen.Home.route) {
+        popUpTo(route = Screen.Login.route) {
+            inclusive = true
+        }
+    }
 }
 
 @Composable
 private fun LoginContent(
-    modifier: Modifier = Modifier,
-    signedInState: Boolean,
     messageBarState: MessageBarState,
-    onButtonClicked: () -> Unit
+    onSignInComplete: (Intent) -> Unit,
+    onError: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .weight(1f)
         ) {
-            if (signedInState) {
-                LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.tertiary
-                )
-            } else {
-                MessageBar(messageBarState = messageBarState)
-            }
+            MessageBar(messageBarState = messageBarState)
         }
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .weight(9f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CentralContent(
-                signInState = signedInState,
-                onButtonClicked = onButtonClicked
+                modifier = modifier,
+                onSignInComplete = onSignInComplete,
+                onError = onError
             )
         }
     }
@@ -93,11 +113,12 @@ private fun LoginContent(
 
 @Composable
 private fun CentralContent(
-    signInState: Boolean,
-    onButtonClicked: () -> Unit
+    onSignInComplete: (Intent) -> Unit,
+    onError: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Image(
-        modifier = Modifier
+        modifier = modifier
             .padding(bottom = 20.dp)
             .size(120.dp),
         painter = painterResource(id = R.drawable.ic_google_logo),
@@ -116,9 +137,9 @@ private fun CentralContent(
         style = MaterialTheme.typography.bodyLarge,
         textAlign = TextAlign.Center
     )
-    GoogleButton(
-        loadingState = signInState,
-        onClick = onButtonClicked
+    GoogleSignInButton(
+        onGoogleSignInCompleted = onSignInComplete,
+        onError = onError
     )
 }
 
@@ -127,8 +148,8 @@ private fun CentralContent(
 @Composable
 fun LoginContentPreview() {
     LoginContent(
-        signedInState = false,
         messageBarState = MessageBarState.Idle,
-        onButtonClicked = {}
+        onSignInComplete = {},
+        onError = {}
     )
 }
