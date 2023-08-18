@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Surface
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.islaharper.dawnofandroid.R
+import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.INFO_ICON_SIZE
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 
@@ -36,14 +38,16 @@ fun InfoBox(
         Icon(
             painter = icon,
             contentDescription = stringResource(R.string.infobox_icon_content_desc),
-            modifier = modifier.padding(end = PADDING_SMALL).size(INFO_ICON_SIZE),
+            modifier = modifier
+                .padding(end = PADDING_SMALL)
+                .size(INFO_ICON_SIZE),
             tint = iconColour
         )
         Column {
             Text(
                 text = heading,
                 color = textColour,
-                fontWeight = FontWeight.Black,
+                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium
             )
             Text(
@@ -57,14 +61,18 @@ fun InfoBox(
 }
 
 @Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun InfoBoxPreview() {
-    InfoBox(
-        icon = painterResource(id = R.drawable.ic_android),
-        iconColour = Color.Green,
-        heading = "Ice Cream Sandwich",
-        description = "4.0",
-        textColour = Color.Black
-    )
+    DawnOfAndroidTheme {
+        Surface {
+            InfoBox(
+                icon = painterResource(id = R.drawable.ic_android),
+                iconColour = MaterialTheme.colorScheme.primary,
+                heading = "4.1.1",
+                description = "Version",
+                textColour = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
 }
