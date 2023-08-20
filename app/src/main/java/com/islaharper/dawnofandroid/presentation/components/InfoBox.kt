@@ -1,6 +1,6 @@
 package com.islaharper.dawnofandroid.presentation.components
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -17,7 +17,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.islaharper.dawnofandroid.R
@@ -29,15 +29,19 @@ import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 fun InfoBox(
     icon: Painter,
     iconColour: Color,
-    heading: String,
+    mainText: String,
     description: String,
     textColour: Color,
     modifier: Modifier = Modifier
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .semantics(mergeDescendants = true) {},
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             painter = icon,
-            contentDescription = stringResource(R.string.infobox_icon_content_desc),
+            contentDescription = null, // decorative
             modifier = modifier
                 .padding(end = PADDING_SMALL)
                 .size(INFO_ICON_SIZE),
@@ -45,14 +49,15 @@ fun InfoBox(
         )
         Column {
             Text(
-                text = heading,
+                text = mainText,
                 color = textColour,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineMedium
             )
             Text(
                 text = description,
-                modifier = Modifier.alpha(ContentAlpha.medium),
+                modifier = Modifier
+                    .alpha(ContentAlpha.medium),
                 color = textColour,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -61,7 +66,7 @@ fun InfoBox(
 }
 
 @Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Dark", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun InfoBoxPreview() {
     DawnOfAndroidTheme {
@@ -69,7 +74,7 @@ fun InfoBoxPreview() {
             InfoBox(
                 icon = painterResource(id = R.drawable.ic_android),
                 iconColour = MaterialTheme.colorScheme.primary,
-                heading = "4.1.1",
+                mainText = "4.1.1",
                 description = "Version",
                 textColour = MaterialTheme.colorScheme.onSurface
             )
