@@ -44,6 +44,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.islaharper.dawnofandroid.R
+import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.Shapes
 import com.islaharper.dawnofandroid.util.Constants
 import com.islaharper.dawnofandroid.util.Resource
@@ -52,8 +53,8 @@ import kotlinx.coroutines.tasks.await
 
 @Composable
 fun GoogleSignInButton(
-    modifier: Modifier = Modifier,
     onGoogleSignInCompleted: (Intent) -> Unit,
+    modifier: Modifier = Modifier,
     onError: (String) -> Unit
 ) {
     val primaryText = stringResource(R.string.sign_in_with_google)
@@ -63,8 +64,8 @@ fun GoogleSignInButton(
     var buttonState by remember { mutableStateOf(false) }
 
     val signInScope = rememberCoroutineScope()
-
     val authScope = rememberCoroutineScope()
+
     val authLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -84,10 +85,12 @@ fun GoogleSignInButton(
                     Log.d("GoogleSignInButton", "One-tap dialog was closed.")
                     onError("Sign In Dismissed")
                 }
+
                 CommonStatusCodes.NETWORK_ERROR -> {
                     Log.d("GoogleSignInButton", "One-tap encountered a network error.")
                     onError("Network Error")
                 }
+
                 else -> {
                     Log.d(
                         "GoogleSignInButton",
@@ -156,7 +159,7 @@ fun GoogleSignInButton(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_google_logo),
-                contentDescription = stringResource(id = R.string.google_logo),
+                contentDescription = null, // decorative
                 tint = Color.Unspecified
             )
             Spacer(
@@ -185,33 +188,37 @@ fun GoogleSignInButton(
 suspend fun oneTapSignIn(context: Context): Resource<BeginSignInResult> {
     val oneTapClient = Identity.getSignInClient(context)
 
-    val signInRequest = BeginSignInRequest.builder()
-        .setGoogleIdTokenRequestOptions(
-            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                .setSupported(true)
-                .setServerClientId(Constants.CLIENT_ID)
-                .setFilterByAuthorizedAccounts(true)
-                .build()
-        )
-        .setAutoSelectEnabled(true)
-        .build()
-
-    val signUpRequest = BeginSignInRequest.builder()
-        .setGoogleIdTokenRequestOptions(
-            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                .setSupported(true)
-                .setServerClientId(Constants.CLIENT_ID)
-                .setFilterByAuthorizedAccounts(false)
-                .build()
-        )
-        .build()
-
     return try {
-        val signInResult = oneTapClient.beginSignIn(signInRequest).await()
+        val signInResult = oneTapClient
+            .beginSignIn(
+                BeginSignInRequest.builder()
+                    .setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                            .setSupported(true)
+                            .setServerClientId(Constants.CLIENT_ID)
+                            .setFilterByAuthorizedAccounts(true)
+                            .build()
+                    )
+                    .setAutoSelectEnabled(true)
+                    .build()
+            )
+            .await()
         Resource.Success(signInResult)
     } catch (ex: Exception) {
         try {
-            val signUpResult = oneTapClient.beginSignIn(signUpRequest).await()
+            val signUpResult = oneTapClient
+                .beginSignIn(
+                    BeginSignInRequest.builder()
+                        .setGoogleIdTokenRequestOptions(
+                            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                .setSupported(true)
+                                .setServerClientId(Constants.CLIENT_ID)
+                                .setFilterByAuthorizedAccounts(false)
+                                .build()
+                        )
+                        .build()
+                )
+                .await()
             Resource.Success(signUpResult)
         } catch (ex: Exception) {
             Resource.Error(ex)
@@ -223,14 +230,9 @@ suspend fun oneTapSignIn(context: Context): Resource<BeginSignInResult> {
 @Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun GoogleButtonPreview() {
-    GoogleSignInButton(onGoogleSignInCompleted = {}) {}
-}
-
-@Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-fun GoogleButtonLoadingPreview() {
-    GoogleSignInButton(
-        onGoogleSignInCompleted = {}
-    ) {}
+    DawnOfAndroidTheme {
+        Surface {
+            GoogleSignInButton(onGoogleSignInCompleted = {}) {}
+        }
+    }
 }

@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navHostController: NavHostController,
+    modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val messageBarState by loginViewModel.messageBarState.collectAsState()
@@ -45,10 +46,10 @@ fun LoginScreen(
         backgroundColor = MaterialTheme.colorScheme.surface,
         content = { contentPadding ->
             LoginContent(
-                modifier = Modifier.padding(contentPadding),
+                modifier = modifier.padding(contentPadding),
                 messageBarState = messageBarState,
-                onSignInComplete = {
-                    loginViewModel.verifyToken(it)
+                onSignInComplete = { intent ->
+                    loginViewModel.verifyToken(intent)
                 },
                 onError = { errorMessage ->
                     loginViewModel.updateMessageBarErrorState(errorMessage)
@@ -117,30 +118,35 @@ private fun CentralContent(
     onError: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Image(
-        modifier = modifier
-            .padding(bottom = 20.dp)
-            .size(120.dp),
-        painter = painterResource(id = R.drawable.ic_google_logo),
-        contentDescription = stringResource(R.string.google_logo)
-    )
-    Text(
-        text = stringResource(R.string.sign_in_welcome),
-        color = MaterialTheme.colorScheme.onSurface,
-        style = MaterialTheme.typography.headlineLarge
-    )
-    Text(
-        text = stringResource(R.string.sign_in_description),
-        modifier = Modifier
-            .padding(bottom = 40.dp, top = 16.dp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        style = MaterialTheme.typography.bodyLarge,
-        textAlign = TextAlign.Center
-    )
-    GoogleSignInButton(
-        onGoogleSignInCompleted = onSignInComplete,
-        onError = onError
-    )
+    Column(
+        modifier = modifier.padding(bottom = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .size(120.dp),
+            painter = painterResource(id = R.drawable.ic_google_logo),
+            contentDescription = stringResource(R.string.google_logo)
+        )
+        Text(
+            text = stringResource(R.string.sign_in_welcome),
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.headlineLarge
+        )
+        Text(
+            text = stringResource(R.string.sign_in_description),
+            modifier = Modifier
+                .padding(bottom = 40.dp, top = 16.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+        GoogleSignInButton(
+            onGoogleSignInCompleted = onSignInComplete,
+            onError = onError
+        )
+    }
 }
 
 @Preview(name = "Light", showBackground = true)
