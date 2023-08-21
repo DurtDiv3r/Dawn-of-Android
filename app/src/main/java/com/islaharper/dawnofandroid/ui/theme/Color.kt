@@ -48,3 +48,9 @@ val NeutralVariant50 = Color(0xFF717971)
 val NeutralVariant60 = Color(0xFF8B938A)
 val NeutralVariant80 = Color(0xFFC1C9BF)
 val NeutralVariant90 = Color(0xFFDDE5DB)
+
+val LightStarColour = Color(0xFFCDCD00)
+val LightStarBackgroundColour = Color(0xFF323200)
+
+val DarkStarColour = Color(0xFFEAEA00)
+val DarkStarBackgroundColour = Color(0xFF626200)
