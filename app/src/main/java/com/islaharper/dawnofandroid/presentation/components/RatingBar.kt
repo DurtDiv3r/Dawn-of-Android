@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -20,8 +22,9 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.islaharper.dawnofandroid.domain.model.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.domain.model.Rating
+import com.islaharper.dawnofandroid.ui.RatingBarColours
+import com.islaharper.dawnofandroid.ui.RatingBarDefaults
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.LightStarBackgroundColour
 import com.islaharper.dawnofandroid.ui.theme.LightStarColour
@@ -32,9 +35,10 @@ import com.islaharper.dawnofandroid.util.Constants.STAR_PATH
 fun RatingBar(
     rating: Double,
     modifier: Modifier = Modifier,
+    colours: RatingBarColours = RatingBarDefaults.colours(),
     spaceBetween: Dp = PADDING_SMALL
 ) {
-    val result = calculateRating(rating = rating)
+    val result by remember(rating) { mutableStateOf(calculateRating(rating = rating)) }
 
     Row(
         modifier = modifier,
@@ -42,18 +46,18 @@ fun RatingBar(
     ) {
         repeat(result.filledStars) {
             FilledStar(
-                starColour = DawnOfAndroidTheme.colourScheme.starColour
+                starColour = colours.starColour
             )
         }
         repeat(result.halfStars) {
             HalfFilledStar(
-                starColour = DawnOfAndroidTheme.colourScheme.starColour,
-                starBackgroundColour = DawnOfAndroidTheme.colourScheme.starBackgroundColour
+                starColour = colours.starColour,
+                starBackgroundColour = colours.starBackgroundColour
             )
         }
         repeat(result.emptyStars) {
             EmptyStar(
-                starBackgroundColour = DawnOfAndroidTheme.colourScheme.starBackgroundColour
+                starBackgroundColour = colours.starBackgroundColour
             )
         }
     }
@@ -200,7 +204,7 @@ fun calculateRating(rating: Double): Rating {
 fun FilledStarPreview() {
     DawnOfAndroidTheme {
         Surface {
-            FilledStar(starColour = DawnOfAndroidTheme.colourScheme.starColour)
+            FilledStar(starColour = RatingBarDefaults.colours().starColour)
         }
     }
 }
@@ -212,8 +216,8 @@ fun HalfFilledStarPreview() {
     DawnOfAndroidTheme {
         Surface {
             HalfFilledStar(
-                starColour = DawnOfAndroidTheme.colourScheme.starColour,
-                starBackgroundColour = DawnOfAndroidTheme.colourScheme.starBackgroundColour
+                starColour = RatingBarDefaults.colours().starColour,
+                starBackgroundColour = RatingBarDefaults.colours().starBackgroundColour
             )
         }
     }
@@ -225,7 +229,7 @@ fun HalfFilledStarPreview() {
 fun EmptyStarPreview() {
     DawnOfAndroidTheme {
         Surface {
-            EmptyStar(starBackgroundColour = DawnOfAndroidTheme.colourScheme.starBackgroundColour)
+            EmptyStar(starBackgroundColour = RatingBarDefaults.colours().starBackgroundColour)
         }
     }
 }

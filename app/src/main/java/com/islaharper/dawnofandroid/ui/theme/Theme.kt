@@ -9,15 +9,11 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.islaharper.dawnofandroid.domain.model.DarkCustomColours
-import com.islaharper.dawnofandroid.domain.model.LightCustomColours
-import com.islaharper.dawnofandroid.domain.model.LocalCustomColourScheme
 
 private val LightColors = lightColorScheme(
     primary = Green40,
@@ -99,14 +95,6 @@ fun DawnOfAndroidTheme(
         darkTheme -> DarkColors
         else -> LightColors
     }
-
-    val customColourScheme =
-        if (darkTheme) {
-            DarkCustomColours
-        } else {
-            LightCustomColours
-        }
-
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -116,13 +104,9 @@ fun DawnOfAndroidTheme(
         }
     }
 
-    CompositionLocalProvider(
-        LocalCustomColourScheme provides customColourScheme
-    ) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = Typography,
-            content = content
-        )
-    }
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
 }
