@@ -20,9 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
-import com.islaharper.dawnofandroid.ui.theme.INFO_ICON_SIZE
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
 
 @Composable
@@ -44,7 +44,7 @@ fun InfoBox(
             contentDescription = null, // decorative
             modifier = modifier
                 .padding(end = PADDING_SMALL)
-                .size(INFO_ICON_SIZE),
+                .size(32.dp),
             tint = iconColour
         )
         Column {
