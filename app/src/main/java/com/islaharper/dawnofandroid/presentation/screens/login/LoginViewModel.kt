@@ -8,15 +8,12 @@ import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
-import com.islaharper.dawnofandroid.domain.useCases.readSignedInState.ReadSignedInStateUseCase
-import com.islaharper.dawnofandroid.domain.useCases.saveSignedInState.SaveSignedInStateUseCase
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCase
 import com.islaharper.dawnofandroid.util.Constants
 import com.islaharper.dawnofandroid.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
@@ -27,8 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val oneTapClient: SignInClient,
-    private val readSignedInStateUseCase: ReadSignedInStateUseCase,
-    private val saveSignedInStateUseCase: SaveSignedInStateUseCase,
     private val verifyTokenUseCase: VerifyTokenUseCase,
 ) : ViewModel() {
 
@@ -43,12 +38,6 @@ class LoginViewModel @Inject constructor(
 
     private val _oneTapSignInResponse = MutableStateFlow<Resource<BeginSignInResult>>(Resource.Idle)
     val oneTapSignInResponse: StateFlow<Resource<BeginSignInResult>> = _oneTapSignInResponse
-
-    init {
-        viewModelScope.launch {
-            _launchOneTapSignIn.value = readSignedInStateUseCase().stateIn(viewModelScope).value
-        }
-    }
 
     fun onOneTapSignInSuccess(result: Intent?) {
         val credentials = oneTapClient.getSignInCredentialFromIntent(result)
@@ -67,7 +56,7 @@ class LoginViewModel @Inject constructor(
                                     message = "Successfully Signed In",
                                 )
                                 _navigationState.value = response.data.success
-                                saveLaunchSignInState(launchedSignIn = false)
+                                setLaunchSignInState(launchedSignIn = false)
                             }
 
                             is Resource.Error -> {
@@ -100,12 +89,12 @@ class LoginViewModel @Inject constructor(
         if (failureMessage.isNotBlank()) {
             _messageBarState.value = MessageBarState.Failure(message = failureMessage)
         }
-        saveLaunchSignInState(launchedSignIn = false)
+        setLaunchSignInState(launchedSignIn = false)
         _navigationState.value = false
     }
 
     fun onGoogleButtonClick() = viewModelScope.launch {
-        saveLaunchSignInState(true)
+        setLaunchSignInState(launchedSignIn = true)
 
         _oneTapSignInResponse.value = try {
             val signInResult = oneTapClient
@@ -146,10 +135,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun saveLaunchSignInState(launchedSignIn: Boolean) {
+    fun setLaunchSignInState(launchedSignIn: Boolean) {
         viewModelScope.launch {
-            _launchOneTapSignIn.value =
-                saveSignedInStateUseCase(launchedSignIn).stateIn(viewModelScope).value
+            _launchOneTapSignIn.value = launchedSignIn
         }
     }
 

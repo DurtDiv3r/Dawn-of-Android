@@ -42,6 +42,7 @@ import com.islaharper.dawnofandroid.util.Resource
 @Composable
 fun LoginScreen(
     navHostController: NavHostController,
+    modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     val launchOneTapState by loginViewModel.launchOneTapSignIn.collectAsState()
@@ -53,7 +54,7 @@ fun LoginScreen(
         backgroundColor = MaterialTheme.colorScheme.surface,
         content = { contentPadding ->
             LoginContent(
-                modifier = Modifier.padding(contentPadding),
+                modifier = modifier.padding(contentPadding),
                 signedInState = launchOneTapState,
                 messageBarState = messageBarState,
                 onButtonClicked = {
@@ -74,7 +75,6 @@ fun LoginScreen(
         }
     }
 
-    // 3. For Navigation once everything is done
     if (navigationState) {
         loginViewModel.onNavigateToHomeScreen()
         navigateToHomeScreen(navController = navHostController)
@@ -99,9 +99,7 @@ private fun authLauncher(loginViewModel: LoginViewModel) =
         }
     }
 
-private fun navigateToHomeScreen(
-    navController: NavHostController,
-) {
+private fun navigateToHomeScreen(navController: NavHostController) {
     navController.navigate(route = Screen.Home.route) {
         popUpTo(route = Screen.Login.route) {
             inclusive = true
@@ -121,7 +119,7 @@ private fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .weight(1f),
         ) {
             if (signedInState) {
@@ -141,7 +139,6 @@ private fun LoginContent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CentralContent(
-                modifier = modifier,
                 signInState = signedInState,
                 onButtonClicked = onButtonClicked,
             )
@@ -153,36 +150,40 @@ private fun LoginContent(
 private fun CentralContent(
     signInState: Boolean,
     onButtonClicked: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
-    Image(
-        modifier = modifier
-            .padding(bottom = 20.dp)
-            .size(120.dp),
-        painter = painterResource(id = R.drawable.ic_google_logo),
-        contentDescription = stringResource(R.string.google_logo),
-    )
-    Text(
-        text = stringResource(R.string.sign_in_welcome),
-        color = MaterialTheme.colorScheme.onSurface,
-        style = MaterialTheme.typography.headlineLarge,
-    )
-    Text(
-        text = stringResource(R.string.sign_in_description),
-        modifier = Modifier
-            .padding(bottom = 40.dp, top = 16.dp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        style = MaterialTheme.typography.bodyLarge,
-        textAlign = TextAlign.Center,
-    )
-    GoogleButton(
-        loadingState = signInState,
-        onClick = onButtonClicked,
-    )
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .size(120.dp),
+            painter = painterResource(id = R.drawable.google_logo),
+            contentDescription = stringResource(R.string.google_logo),
+        )
+        Text(
+            text = stringResource(R.string.sign_in_welcome),
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.headlineLarge,
+        )
+        Text(
+            text = stringResource(R.string.sign_in_description),
+            modifier = Modifier
+                .padding(bottom = 40.dp, top = 16.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+        )
+        GoogleButton(
+            loadingState = signInState,
+            onClick = onButtonClicked,
+        )
+    }
 }
 
 @Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun LoginContentPreview() {
     DawnOfAndroidTheme {
