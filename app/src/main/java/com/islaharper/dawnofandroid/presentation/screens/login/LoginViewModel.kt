@@ -27,17 +27,17 @@ class LoginViewModel @Inject constructor(
     private val verifyTokenUseCase: VerifyTokenUseCase,
 ) : ViewModel() {
 
-    private val _launchOneTapSignIn = MutableStateFlow(false)
-    val launchOneTapSignIn: StateFlow<Boolean> = _launchOneTapSignIn
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading
+
+    private val _launchSignIn = MutableStateFlow<BeginSignInResult?>(null)
+    val launchSignIn: StateFlow<BeginSignInResult?> = _launchSignIn
 
     private val _messageBarState = MutableStateFlow<MessageBarState>(MessageBarState.Idle)
     val messageBarState: StateFlow<MessageBarState> = _messageBarState
 
     private val _navigationState = MutableStateFlow(false)
     val navigationState: StateFlow<Boolean> = _navigationState
-
-    private val _oneTapSignInResponse = MutableStateFlow<Resource<BeginSignInResult>>(Resource.Idle)
-    val oneTapSignInResponse: StateFlow<Resource<BeginSignInResult>> = _oneTapSignInResponse
 
     fun onOneTapSignInSuccess(result: Intent?) {
         val credentials = oneTapClient.getSignInCredentialFromIntent(result)
@@ -55,8 +55,9 @@ class LoginViewModel @Inject constructor(
                                 _messageBarState.value = MessageBarState.Success(
                                     message = "Successfully Signed In",
                                 )
+                                _loading.value = false
+                                _launchSignIn.value = null
                                 _navigationState.value = response.data.success
-                                setLaunchSignInState(launchedSignIn = false)
                             }
 
                             is Resource.Error -> {
@@ -89,14 +90,13 @@ class LoginViewModel @Inject constructor(
         if (failureMessage.isNotBlank()) {
             _messageBarState.value = MessageBarState.Failure(message = failureMessage)
         }
-        setLaunchSignInState(launchedSignIn = false)
-        _navigationState.value = false
+        setToInitialSignInState()
     }
 
     fun onGoogleButtonClick() = viewModelScope.launch {
-        setLaunchSignInState(launchedSignIn = true)
+        _loading.value = true
 
-        _oneTapSignInResponse.value = try {
+        _launchSignIn.value = try {
             val signInResult = oneTapClient
                 .beginSignIn(
                     BeginSignInRequest.builder()
@@ -111,7 +111,7 @@ class LoginViewModel @Inject constructor(
                         .build(),
                 )
                 .await()
-            Resource.Success(signInResult)
+            signInResult
         } catch (ex: Exception) {
             try {
                 val signUpResult = oneTapClient
@@ -127,18 +127,18 @@ class LoginViewModel @Inject constructor(
                             .build(),
                     )
                     .await()
-                Resource.Success(signUpResult)
+                signUpResult
             } catch (ex: Exception) {
-                onOneTapSignInFailure(failureMessage = ex.message ?: "Error Signing In")
-                Resource.Error(ex)
+                onOneTapSignInFailure(failureMessage = ex.localizedMessage ?: "Error Signing In")
+                null
             }
         }
     }
 
-    fun setLaunchSignInState(launchedSignIn: Boolean) {
-        viewModelScope.launch {
-            _launchOneTapSignIn.value = launchedSignIn
-        }
+    private fun setToInitialSignInState() {
+        _loading.value = false
+        _launchSignIn.value = null
+        _navigationState.value = false
     }
 
     fun onNavigateToHomeScreen() {

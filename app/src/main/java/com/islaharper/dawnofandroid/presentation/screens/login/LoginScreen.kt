@@ -17,7 +17,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,15 +28,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.common.api.ApiException
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
 import com.islaharper.dawnofandroid.navigation.Screen
 import com.islaharper.dawnofandroid.presentation.common.GoogleButton
 import com.islaharper.dawnofandroid.presentation.components.MessageBar
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
-import com.islaharper.dawnofandroid.util.Resource
 
 @Composable
 fun LoginScreen(
@@ -45,17 +41,17 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val launchOneTapState by loginViewModel.launchOneTapSignIn.collectAsState()
+    val loading by loginViewModel.loading.collectAsState()
+    val launchSignIn by loginViewModel.launchSignIn.collectAsState()
     val messageBarState by loginViewModel.messageBarState.collectAsState()
     val navigationState by loginViewModel.navigationState.collectAsState()
-    val oneTapSignInResponse by loginViewModel.oneTapSignInResponse.collectAsState()
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.surface,
         content = { contentPadding ->
             LoginContent(
                 modifier = modifier.padding(contentPadding),
-                signedInState = launchOneTapState,
+                loading = loading,
                 messageBarState = messageBarState,
                 onButtonClicked = {
                     loginViewModel.onGoogleButtonClick()
@@ -64,14 +60,22 @@ fun LoginScreen(
         },
     )
 
-    val authLauncher = authLauncher(loginViewModel)
+    val authLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            loginViewModel.onOneTapSignInSuccess(result = result.data)
+        } else {
+            loginViewModel.onOneTapSignInFailure(failureMessage = "Error signing in with credentials")
+        }
+    }
 
-    if (launchOneTapState && oneTapSignInResponse is Resource.Success) {
-        (oneTapSignInResponse as Resource.Success<BeginSignInResult>).data.let { beginSignInResult ->
-            LaunchedEffect(key1 = beginSignInResult) {
-                val intent = IntentSenderRequest.Builder(beginSignInResult.pendingIntent.intentSender).build()
-                authLauncher.launch(intent)
-            }
+    if (launchSignIn != null) {
+        launchSignIn.let { beginSignInResult ->
+            authLauncher.launch(
+                IntentSenderRequest.Builder(beginSignInResult!!.pendingIntent.intentSender)
+                    .build()
+            )
         }
     }
 
@@ -80,24 +84,6 @@ fun LoginScreen(
         navigateToHomeScreen(navController = navHostController)
     }
 }
-
-@Composable
-private fun authLauncher(loginViewModel: LoginViewModel) =
-    rememberLauncherForActivityResult(
-        ActivityResultContracts.StartIntentSenderForResult(),
-    ) { result ->
-        try {
-            if (result.resultCode == Activity.RESULT_OK) {
-                loginViewModel.onOneTapSignInSuccess(result = result.data)
-            } else {
-                loginViewModel.onOneTapSignInFailure(failureMessage = "Error Signing In")
-            }
-        } catch (e: ApiException) {
-            loginViewModel.onOneTapSignInFailure(
-                failureMessage = e.message ?: "Exception Signing In",
-            )
-        }
-    }
 
 private fun navigateToHomeScreen(navController: NavHostController) {
     navController.navigate(route = Screen.Home.route) {
@@ -109,7 +95,7 @@ private fun navigateToHomeScreen(navController: NavHostController) {
 
 @Composable
 private fun LoginContent(
-    signedInState: Boolean,
+    loading: Boolean,
     messageBarState: MessageBarState,
     onButtonClicked: () -> Unit,
     modifier: Modifier = Modifier,
@@ -122,7 +108,7 @@ private fun LoginContent(
             modifier = modifier
                 .weight(1f),
         ) {
-            if (signedInState) {
+            if (loading) {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.tertiary,
@@ -139,7 +125,7 @@ private fun LoginContent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CentralContent(
-                signInState = signedInState,
+                loading = loading,
                 onButtonClicked = onButtonClicked,
             )
         }
@@ -148,7 +134,7 @@ private fun LoginContent(
 
 @Composable
 private fun CentralContent(
-    signInState: Boolean,
+    loading: Boolean,
     onButtonClicked: () -> Unit,
 ) {
     Column(
@@ -176,7 +162,7 @@ private fun CentralContent(
             textAlign = TextAlign.Center,
         )
         GoogleButton(
-            loadingState = signInState,
+            loadingState = loading,
             onClick = onButtonClicked,
         )
     }
@@ -189,7 +175,7 @@ fun LoginContentPreview() {
     DawnOfAndroidTheme {
         Surface {
             LoginContent(
-                signedInState = false,
+                loading = false,
                 messageBarState = MessageBarState.Idle,
                 onButtonClicked = {},
             )
