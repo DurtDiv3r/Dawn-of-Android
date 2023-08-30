@@ -1,6 +1,10 @@
 package com.islaharper.dawnofandroid.presentation.screens.login
 
+import android.app.Activity
 import android.content.res.Configuration
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,67 +30,103 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
+import com.islaharper.dawnofandroid.navigation.Screen
 import com.islaharper.dawnofandroid.presentation.common.GoogleButton
 import com.islaharper.dawnofandroid.presentation.components.MessageBar
+import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 
 @Composable
 fun LoginScreen(
     navHostController: NavHostController,
-    loginViewModel: LoginViewModel = hiltViewModel()
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val signedInState by loginViewModel.signedInState.collectAsState()
+    val loading by loginViewModel.loading.collectAsState()
+    val launchSignIn by loginViewModel.launchSignIn.collectAsState()
     val messageBarState by loginViewModel.messageBarState.collectAsState()
-    val apiResponse by loginViewModel.apiResponse.collectAsState()
+    val navigationState by loginViewModel.navigationState.collectAsState()
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.surface,
         content = { contentPadding ->
             LoginContent(
-                modifier = Modifier.padding(contentPadding),
-                signedInState = signedInState,
+                modifier = modifier.padding(contentPadding),
+                loading = loading,
                 messageBarState = messageBarState,
                 onButtonClicked = {
-                    loginViewModel.saveSignedInState(signedIn = true)
-                }
+                    loginViewModel.onGoogleButtonClick()
+                },
+            )
+        },
+    )
+
+    val authLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            loginViewModel.onOneTapSignInSuccess(result = result.data)
+        } else {
+            loginViewModel.onOneTapSignInFailure(failureMessage = "Error signing in with credentials")
+        }
+    }
+
+    if (launchSignIn != null) {
+        launchSignIn.let { beginSignInResult ->
+            authLauncher.launch(
+                IntentSenderRequest.Builder(beginSignInResult!!.pendingIntent.intentSender)
+                    .build()
             )
         }
-    )
+    }
+
+    if (navigationState) {
+        loginViewModel.onNavigateToHomeScreen()
+        navigateToHomeScreen(navController = navHostController)
+    }
+}
+
+private fun navigateToHomeScreen(navController: NavHostController) {
+    navController.navigate(route = Screen.Home.route) {
+        popUpTo(route = Screen.Login.route) {
+            inclusive = true
+        }
+    }
 }
 
 @Composable
 private fun LoginContent(
-    modifier: Modifier = Modifier,
-    signedInState: Boolean,
+    loading: Boolean,
     messageBarState: MessageBarState,
-    onButtonClicked: () -> Unit
+    onButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = modifier
-                .weight(1f)
+                .weight(1f),
         ) {
-            if (signedInState) {
+            if (loading) {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = MaterialTheme.colorScheme.tertiary,
                 )
             } else {
                 MessageBar(messageBarState = messageBarState)
             }
         }
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .weight(9f)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             CentralContent(
-                signInState = signedInState,
-                onButtonClicked = onButtonClicked
+                loading = loading,
+                onButtonClicked = onButtonClicked,
             )
         }
     }
@@ -93,42 +134,51 @@ private fun LoginContent(
 
 @Composable
 private fun CentralContent(
-    signInState: Boolean,
-    onButtonClicked: () -> Unit
+    loading: Boolean,
+    onButtonClicked: () -> Unit,
 ) {
-    Image(
-        modifier = Modifier
-            .padding(bottom = 20.dp)
-            .size(120.dp),
-        painter = painterResource(id = R.drawable.ic_google_logo),
-        contentDescription = stringResource(R.string.google_logo)
-    )
-    Text(
-        text = stringResource(R.string.sign_in_welcome),
-        color = MaterialTheme.colorScheme.onSurface,
-        style = MaterialTheme.typography.headlineLarge
-    )
-    Text(
-        text = stringResource(R.string.sign_in_description),
-        modifier = Modifier
-            .padding(bottom = 40.dp, top = 16.dp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        style = MaterialTheme.typography.bodyLarge,
-        textAlign = TextAlign.Center
-    )
-    GoogleButton(
-        loadingState = signInState,
-        onClick = onButtonClicked
-    )
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(bottom = 20.dp)
+                .size(120.dp),
+            painter = painterResource(id = R.drawable.google_logo),
+            contentDescription = stringResource(R.string.google_logo),
+        )
+        Text(
+            text = stringResource(R.string.sign_in_welcome),
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.headlineLarge,
+        )
+        Text(
+            text = stringResource(R.string.sign_in_description),
+            modifier = Modifier
+                .padding(bottom = 40.dp, top = 16.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+        )
+        GoogleButton(
+            loadingState = loading,
+            onClick = onButtonClicked,
+        )
+    }
 }
 
 @Preview(name = "Light", showBackground = true)
-@Preview(name = "Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun LoginContentPreview() {
-    LoginContent(
-        signedInState = false,
-        messageBarState = MessageBarState.Idle,
-        onButtonClicked = {}
-    )
+    DawnOfAndroidTheme {
+        Surface {
+            LoginContent(
+                loading = false,
+                messageBarState = MessageBarState.Idle,
+                onButtonClicked = {},
+            )
+        }
+    }
 }
