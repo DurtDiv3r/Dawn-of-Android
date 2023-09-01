@@ -3,19 +3,17 @@ package com.islaharper.dawnofandroid.presentation.screens.login
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
+import com.islaharper.dawnofandroid.domain.useCases.signInClient.SignInClientUseCase
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.VerifyTokenUseCase
-import com.islaharper.dawnofandroid.util.Constants
 import com.islaharper.dawnofandroid.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -25,6 +23,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val oneTapClient: SignInClient,
     private val verifyTokenUseCase: VerifyTokenUseCase,
+    private val signInClientUseCase: SignInClientUseCase
 ) : ViewModel() {
 
     private val _loading = MutableStateFlow(false)
@@ -96,41 +95,19 @@ class LoginViewModel @Inject constructor(
     fun onGoogleButtonClick() = viewModelScope.launch {
         _loading.value = true
 
-        _launchSignIn.value = try {
-            val signInResult = oneTapClient
-                .beginSignIn(
-                    BeginSignInRequest.builder()
-                        .setGoogleIdTokenRequestOptions(
-                            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                                .setSupported(true)
-                                .setServerClientId(Constants.CLIENT_ID)
-                                .setFilterByAuthorizedAccounts(true)
-                                .build(),
-                        )
-                        .setAutoSelectEnabled(true)
-                        .build(),
-                )
-                .await()
-            signInResult
-        } catch (ex: Exception) {
-            try {
-                val signUpResult = oneTapClient
-                    .beginSignIn(
-                        BeginSignInRequest.builder()
-                            .setGoogleIdTokenRequestOptions(
-                                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                                    .setSupported(true)
-                                    .setServerClientId(Constants.CLIENT_ID)
-                                    .setFilterByAuthorizedAccounts(false)
-                                    .build(),
-                            )
-                            .build(),
+        signInClientUseCase.invoke().collect { response ->
+            when (response) {
+                is Resource.Idle -> {}
+                is Resource.Success -> {
+                    _launchSignIn.value = response.data
+                }
+
+                is Resource.Error -> {
+                    onOneTapSignInFailure(
+                        failureMessage = response.ex?.localizedMessage ?: "Error Signing In"
                     )
-                    .await()
-                signUpResult
-            } catch (ex: Exception) {
-                onOneTapSignInFailure(failureMessage = ex.localizedMessage ?: "Error Signing In")
-                null
+                    _launchSignIn.value = null
+                }
             }
         }
     }
