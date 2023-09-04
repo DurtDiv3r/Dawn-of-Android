@@ -1,9 +1,7 @@
 package com.islaharper.dawnofandroid.di
 
 import android.content.Context
-import androidx.room.Room
 import com.islaharper.dawnofandroid.data.local.AndroidFlavourDb
-import com.islaharper.dawnofandroid.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,10 +16,9 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AndroidFlavourDb {
-        return Room.databaseBuilder(
-            context,
-            AndroidFlavourDb::class.java,
-            Constants.FLAVOUR_DB,
-        ).build()
+        return AndroidFlavourDb.create(
+            context = context,
+            useInMemory = false
+        )
     }
 }

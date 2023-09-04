@@ -6,7 +6,7 @@ import com.islaharper.dawnofandroid.util.Constants
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Entity(tableName = Constants.FLAVOUR_DB_TABLE)
+@Entity(tableName = Constants.FLAVOURS_TABLE)
 data class Flavour(
     @PrimaryKey(autoGenerate = false)
     var id: Int,

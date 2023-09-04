@@ -13,7 +13,7 @@ object Constants {
 
     // Room DB
     const val FLAVOUR_DB = "flavour_db"
-    const val FLAVOUR_DB_TABLE = "flavour_table"
+    const val FLAVOURS_TABLE = "flavours_table"
 
     // PREFS
     const val PREFS_NAME = "app_preferences"
@@ -25,10 +25,6 @@ object Constants {
     // OnBoarding
     const val ONBOARDING_PAGE_COUNT = 3
     const val ONBOARDING_LAST_PAGE = 2
-
-    // Names
-    const val SIGN_IN_REQUEST = "signInRequest"
-    const val SIGN_UP_REQUEST = "signUpRequest"
 
     // Rating Widget
     const val STAR_PATH = "m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z"
