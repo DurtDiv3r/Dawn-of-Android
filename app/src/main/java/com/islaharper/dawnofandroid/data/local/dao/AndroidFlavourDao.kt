@@ -10,15 +10,15 @@ import com.islaharper.dawnofandroid.domain.model.Flavour
 @Dao
 interface AndroidFlavourDao {
 
-    @Query("SELECT * FROM flavours_table ORDER BY id ASC")
+    @Query("SELECT * FROM flavour ORDER BY id ASC")
     fun getAllFlavours(): PagingSource<Int, Flavour>
 
-    @Query("SELECT * FROM flavours_table WHERE id = :id")
+    @Query("SELECT * FROM flavour WHERE id = :id")
     fun getSelectedFlavour(id: Int): Flavour
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addFlavours(flavours: List<Flavour>)
 
-    @Query("DELETE FROM flavours_table")
+    @Query("DELETE FROM flavour")
     suspend fun deleteAll()
 }
