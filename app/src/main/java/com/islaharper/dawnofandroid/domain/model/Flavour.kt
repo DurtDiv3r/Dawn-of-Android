@@ -2,11 +2,10 @@ package com.islaharper.dawnofandroid.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.islaharper.dawnofandroid.util.Constants
 import kotlinx.serialization.Serializable
 
 @Serializable
-@Entity(tableName = Constants.FLAVOUR_TABLE)
+@Entity(tableName = "flavour")
 data class Flavour(
     @PrimaryKey(autoGenerate = false)
     var id: Int,

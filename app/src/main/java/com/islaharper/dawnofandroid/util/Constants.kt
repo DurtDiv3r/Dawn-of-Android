@@ -11,10 +11,6 @@ object Constants {
     const val BASE_URL = "https://personalktorserver-73cb994b66ce.herokuapp.com/"
     const val CLIENT_ID = BuildConfig.CLIENT_ID
 
-    // Room DB
-    const val FLAVOUR_DB = "flavour_db"
-    const val FLAVOUR_TABLE = "flavour"
-
     // PREFS
     const val PREFS_NAME = "app_preferences"
     const val PREFS_ONBOARDING_KEY = "onboarding_complete"

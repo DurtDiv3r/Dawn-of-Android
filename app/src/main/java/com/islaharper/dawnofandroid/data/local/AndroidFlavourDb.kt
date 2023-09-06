@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.islaharper.dawnofandroid.data.local.dao.AndroidFlavourDao
 import com.islaharper.dawnofandroid.domain.model.Flavour
-import com.islaharper.dawnofandroid.util.Constants.FLAVOUR_DB
 
 @Database(entities = [Flavour::class], version = 1)
 abstract class AndroidFlavourDb : RoomDatabase() {
@@ -19,7 +18,7 @@ abstract class AndroidFlavourDb : RoomDatabase() {
                     AndroidFlavourDb::class.java,
                 )
             } else {
-                Room.databaseBuilder(context, AndroidFlavourDb::class.java, FLAVOUR_DB)
+                Room.databaseBuilder(context, AndroidFlavourDb::class.java, "flavour_db")
             }
             return dbBuilder.fallbackToDestructiveMigration().build()
         }
