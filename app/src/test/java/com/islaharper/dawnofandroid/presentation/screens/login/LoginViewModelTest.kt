@@ -1,15 +1,18 @@
 package com.islaharper.dawnofandroid.presentation.screens.login
 
+import android.content.Intent
 import app.cash.turbine.test
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.common.truth.Truth.assertThat
 import com.islaharper.dawnofandroid.domain.model.ApiResponse
-import com.islaharper.dawnofandroid.domain.model.ApiTokenRequest
 import com.islaharper.dawnofandroid.domain.model.MessageBarState
-import com.islaharper.dawnofandroid.domain.useCases.readSignedInState.FakeReadSignInStateUseCase
-import com.islaharper.dawnofandroid.domain.useCases.saveSignedInState.FakeSaveSignedInStateUseCase
+import com.islaharper.dawnofandroid.domain.useCases.signInClient.FakeSignInClientUseCase
 import com.islaharper.dawnofandroid.domain.useCases.verifyToken.FakeVerifyTokenUseCase
 import com.islaharper.dawnofandroid.util.Resource
-import junit.framework.TestCase.assertEquals
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -23,22 +26,21 @@ import java.net.ConnectException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest {
-
+    private val mockSignInClient: SignInClient = mockk()
     private lateinit var viewModel: LoginViewModel
-    private lateinit var fakeReadSignedInStateUseCase: FakeReadSignInStateUseCase
-    private lateinit var fakeSaveSignedInStateUseCase: FakeSaveSignedInStateUseCase
     private lateinit var fakeVerifyTokenUseCase: FakeVerifyTokenUseCase
+    private lateinit var fakeSignInClientUseCase: FakeSignInClientUseCase
 
     @Before
     fun setUp() {
         Dispatchers.setMain(UnconfinedTestDispatcher())
-        fakeReadSignedInStateUseCase = FakeReadSignInStateUseCase()
-        fakeSaveSignedInStateUseCase = FakeSaveSignedInStateUseCase()
+
         fakeVerifyTokenUseCase = FakeVerifyTokenUseCase()
+        fakeSignInClientUseCase = FakeSignInClientUseCase()
         viewModel = LoginViewModel(
-            readSignedInStateUseCase = fakeReadSignedInStateUseCase,
-            saveSignedInStateUseCase = fakeSaveSignedInStateUseCase,
+            oneTapClient = mockSignInClient,
             verifyTokenUseCase = fakeVerifyTokenUseCase,
+            signInClientUseCase = fakeSignInClientUseCase
         )
     }
 
@@ -48,63 +50,139 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `for SaveSignedInStateUseCase, test if saveSignedInState() update signedInState value`() =
-        runTest {
-            assertEquals(false, viewModel.signedInState.value)
-            viewModel.saveSignedInState(true)
-            fakeSaveSignedInStateUseCase.emit(true)
+    fun `for onGoogleButtonClick success, test loading and launchSignIn values update`() = runTest {
+        val mockBeginSignInResult: BeginSignInResult = mockk(relaxed = true)
 
-            viewModel.signedInState.test {
+        assertThat(viewModel.loading.value).isEqualTo(false)
+        assertThat(viewModel.launchSignIn.value).isEqualTo(null)
+
+        viewModel.onGoogleButtonClick()
+        fakeSignInClientUseCase.emit(Resource.Success(data = mockBeginSignInResult))
+
+        viewModel.loading.test {
+            val emission = awaitItem()
+            assertThat(emission).isEqualTo(true)
+        }
+
+        viewModel.launchSignIn.test {
+            val emission = awaitItem()
+            assertThat(emission).isEqualTo(mockBeginSignInResult)
+        }
+    }
+
+    @Test
+    fun `for onGoogleButtonClick failure, test loading, launchSignIn and messageBarState values update`() =
+        runTest {
+            assertThat(viewModel.loading.value).isEqualTo(false)
+            assertThat(viewModel.launchSignIn.value).isEqualTo(null)
+            assertThat(viewModel.messageBarState.value).isEqualTo(MessageBarState.Idle)
+
+            viewModel.onGoogleButtonClick()
+
+            viewModel.loading.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(true)
+            }
+            fakeSignInClientUseCase.emit(Resource.Error(ex = Exception()))
+
+            viewModel.loading.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(false)
+            }
+
+            viewModel.launchSignIn.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(null)
+            }
+
+            viewModel.messageBarState.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(MessageBarState.Failure(message = "Error Signing In"))
+            }
+        }
+
+    @Test
+    fun `for onOneTapSignInSuccess test if successful verifyTokenUseCase updates messageBarState, launchSignIn and navigationState`() =
+        runTest {
+            val fakeTokenId = "fakeTokenId"
+            val fakeIntent: Intent = mockk(relaxed = true)
+            val mockCredentials = mockk<SignInCredential> {
+                every {
+                    googleIdToken
+                } returns fakeTokenId
+            }
+
+            assertThat(viewModel.messageBarState.value).isEqualTo(MessageBarState.Idle)
+            assertThat(viewModel.navigationState.value).isEqualTo(false)
+
+            every {
+                mockSignInClient.getSignInCredentialFromIntent(fakeIntent)
+            } returns mockCredentials
+
+            viewModel.onOneTapSignInSuccess(fakeIntent)
+            fakeVerifyTokenUseCase.emit(Resource.Success(ApiResponse(success = true)))
+
+            viewModel.messageBarState.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(MessageBarState.Success(message = "Successfully Signed In"))
+            }
+
+            viewModel.launchSignIn.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(null)
+            }
+
+            viewModel.navigationState.test {
                 val emission = awaitItem()
                 assertThat(emission).isEqualTo(true)
             }
         }
 
     @Test
-    fun `for VerifyTokenUseCase, test if apiResponse default state is Idle`() = runTest {
-        assertThat(viewModel.apiResponse.value).isEqualTo(Resource.Idle)
-    }
-
-    @Test
-    fun `for VerifyTokenUseCase, test if verifyToken() updates apiResponse to Resource Success`() =
+    fun `for onOneTapSignInSuccess test if unsuccessful verifyTokenUseCase updates messageBarState, launchSignIn and navigationState`() =
         runTest {
-            assertThat(viewModel.apiResponse.value).isEqualTo(Resource.Idle)
-
-            viewModel.verifyToken(
-                ApiTokenRequest(tokenId = "TEST TOKEN"),
-            )
-            fakeVerifyTokenUseCase.emit(Resource.Success(ApiResponse(success = true)))
-            viewModel.apiResponse.test {
-                val emission = awaitItem()
-                assertThat(emission).isEqualTo(Resource.Success(ApiResponse(success = true)))
+            val fakeTokenId = "fakeTokenId"
+            val fakeIntent: Intent = mockk(relaxed = true)
+            val mockCredentials = mockk<SignInCredential> {
+                every {
+                    googleIdToken
+                } returns fakeTokenId
             }
-        }
 
-    @Test
-    fun `for VerifyTokenUseCase, test if verifyToken() updates messageBarState Success`() =
-        runTest {
-            assertThat(viewModel.apiResponse.value).isEqualTo(Resource.Idle)
             assertThat(viewModel.messageBarState.value).isEqualTo(MessageBarState.Idle)
+            assertThat(viewModel.navigationState.value).isEqualTo(false)
 
-            viewModel.verifyToken(ApiTokenRequest(tokenId = "TEST TOKEN"))
-            fakeVerifyTokenUseCase.emit(Resource.Success(ApiResponse(success = true)))
-            viewModel.messageBarState.test {
-                val emission = awaitItem()
-                assertThat(emission).isEqualTo(MessageBarState.Success(message = "Successfully Signed In"))
-            }
-        }
+            every {
+                mockSignInClient.getSignInCredentialFromIntent(fakeIntent)
+            } returns mockCredentials
 
-    @Test
-    fun `for VerifyTokenUseCase, test if verifyToken() updates messageBarState Failure`() =
-        runTest {
-            assertThat(viewModel.apiResponse.value).isEqualTo(Resource.Idle)
-            assertThat(viewModel.messageBarState.value).isEqualTo(MessageBarState.Idle)
-
-            viewModel.verifyToken(ApiTokenRequest(tokenId = "TEST TOKEN"))
+            viewModel.onOneTapSignInSuccess(fakeIntent)
             fakeVerifyTokenUseCase.emit(Resource.Error(ex = ConnectException()))
+
             viewModel.messageBarState.test {
                 val emission = awaitItem()
                 assertThat(emission).isEqualTo(MessageBarState.Failure(message = "Internet Connection Unavailable"))
             }
+
+            viewModel.launchSignIn.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(null)
+            }
+
+            viewModel.navigationState.test {
+                val emission = awaitItem()
+                assertThat(emission).isEqualTo(false)
+            }
+        }
+
+    @Test
+    fun `for onOneTapSignInFailure, test messageBar failure message and values setToInitialSignInState`() =
+        runTest {
+            viewModel.onOneTapSignInFailure("test failure")
+
+            assertThat(viewModel.messageBarState.value).isEqualTo(MessageBarState.Failure(message = "test failure"))
+            assertThat(viewModel.launchSignIn.value).isEqualTo(null)
+            assertThat(viewModel.loading.value).isEqualTo(false)
+            assertThat(viewModel.navigationState.value).isEqualTo(false)
         }
 }
