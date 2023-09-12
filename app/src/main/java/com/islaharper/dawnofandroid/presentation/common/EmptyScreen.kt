@@ -32,22 +32,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.islaharper.dawnofandroid.R
-import com.islaharper.dawnofandroid.domain.model.EmptyScreenData
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.PADDING_MEDIUM
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EmptyScreen(
-    data: EmptyScreenData,
-    modifier: Modifier = Modifier
+    message: String,
+    icon: Int,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    onPullToRefresh: () -> Unit
 ) {
     var isRefreshing by remember {
         mutableStateOf(false)
     }
     val pullRefreshState = rememberPullRefreshState(refreshing = isRefreshing, onRefresh = {
         isRefreshing = true
-        data.flavours?.refresh()
+        onPullToRefresh()
         isRefreshing = false
     })
 
@@ -64,13 +66,13 @@ fun EmptyScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
-                painter = painterResource(id = data.icon),
-                contentDescription = data.contentDescription,
+                painter = painterResource(id = icon),
+                contentDescription = contentDescription,
                 modifier = Modifier.size(120.dp),
                 tint = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
             )
             Text(
-                text = data.message,
+                text = message,
                 modifier = Modifier.padding(top = PADDING_MEDIUM),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
                 textAlign = TextAlign.Center,
@@ -93,11 +95,9 @@ fun EmptyScreenPreview() {
     DawnOfAndroidTheme {
         Surface {
             EmptyScreen(
-                EmptyScreenData(
-                    message = "Find a flavour",
-                    icon = R.drawable.search_document
-                )
-            )
+                message = "Find a flavour",
+                icon = R.drawable.search_document
+            ) {}
         }
     }
 }
@@ -109,12 +109,10 @@ fun EmptyScreenErrorPreview() {
     DawnOfAndroidTheme {
         Surface {
             EmptyScreen(
-                EmptyScreenData(
-                    message = "Server unavailable",
-                    icon = R.drawable.network_error,
-                    contentDescription = "Network error icon"
-                )
-            )
+                message = "Server unavailable",
+                icon = R.drawable.network_error,
+                contentDescription = "Network error icon"
+            ) {}
         }
     }
 }
