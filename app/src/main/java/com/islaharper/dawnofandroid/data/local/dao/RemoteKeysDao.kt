@@ -8,12 +8,12 @@ import com.islaharper.dawnofandroid.domain.model.RemoteKeys
 
 @Dao
 interface RemoteKeysDao {
-    @Query("SELECT * FROM flavour_remote_keys_table WHERE id = :id")
+    @Query("SELECT * FROM remote_keys WHERE id = :id")
     suspend fun getRemoteKeys(id: Int): RemoteKeys
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addAllRemoteKeys(flavourRemoteKeys: List<RemoteKeys>)
 
-    @Query("DELETE FROM flavour_remote_keys_table")
+    @Query("DELETE FROM remote_keys")
     suspend fun deleteAllRemoteKeys()
 }

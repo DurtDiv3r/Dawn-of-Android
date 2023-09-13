@@ -2,9 +2,8 @@ package com.islaharper.dawnofandroid.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.islaharper.dawnofandroid.util.Constants.REMOTE_KEYS_TABLE
 
-@Entity(tableName = REMOTE_KEYS_TABLE)
+@Entity(tableName = "remote_keys")
 data class RemoteKeys(
     @PrimaryKey(autoGenerate = false)
     val id: Int,

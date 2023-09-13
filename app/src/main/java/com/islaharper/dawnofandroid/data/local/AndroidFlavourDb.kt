@@ -20,7 +20,7 @@ abstract class AndroidFlavourDb : RoomDatabase() {
                     AndroidFlavourDb::class.java,
                 )
             } else {
-                Room.databaseBuilder(context, AndroidFlavourDb::class.java, "test_database.db")
+                Room.databaseBuilder(context, AndroidFlavourDb::class.java, "flavour_db")
             }
             return dbBuilder.fallbackToDestructiveMigration().build()
         }
