@@ -2,7 +2,6 @@ package com.islaharper.dawnofandroid.ui.theme
 
 import androidx.compose.ui.unit.dp
 
-val PADDING_XSMALL = 3.dp
 val PADDING_SMALL = 6.dp
 val PADDING_MEDIUM = 16.dp
 val PADDING_LARGE = 20.dp

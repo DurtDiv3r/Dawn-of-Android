@@ -26,31 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.islaharper.dawnofandroid.R
 import com.islaharper.dawnofandroid.ui.theme.DawnOfAndroidTheme
 import com.islaharper.dawnofandroid.ui.theme.PADDING_LARGE
 import com.islaharper.dawnofandroid.ui.theme.PADDING_MEDIUM
 import com.islaharper.dawnofandroid.ui.theme.PADDING_SMALL
-import com.islaharper.dawnofandroid.ui.theme.PADDING_XSMALL
 
 @Composable
 fun LoadingEffect(modifier: Modifier = Modifier) {
-    LazyColumn(
-        modifier = modifier.background(MaterialTheme.colorScheme.surface),
-        contentPadding = PaddingValues(all = PADDING_SMALL),
-        verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM),
-    ) {
-        items(count = 2) {
-            AnimatedLoadingItem()
-        }
-    }
-}
-
-@Composable
-fun AnimatedLoadingItem(modifier: Modifier = Modifier) {
     val transition = rememberInfiniteTransition(label = "")
     val alphaAnim by transition.animateFloat(
         initialValue = 1f,
@@ -62,53 +46,60 @@ fun AnimatedLoadingItem(modifier: Modifier = Modifier) {
             ),
             repeatMode = RepeatMode.Reverse,
         ),
-        label = stringResource(R.string.loading_animation_label),
+        label = "Loading animation",
     )
-
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(400.dp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        shape = RoundedCornerShape(size = PADDING_LARGE),
+    LazyColumn(
+        modifier = modifier.background(MaterialTheme.colorScheme.surface),
+        contentPadding = PaddingValues(all = PADDING_SMALL),
+        verticalArrangement = Arrangement.spacedBy(PADDING_MEDIUM),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(PADDING_MEDIUM),
-            verticalArrangement = Arrangement.Bottom,
-        ) {
+        items(count = 2) {
             Surface(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .height(30.dp)
-                    .alpha(alpha = alphaAnim),
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(PADDING_SMALL),
-
-            ) {}
-            Spacer(modifier = Modifier.padding(PADDING_MEDIUM))
-            repeat(3) {
-                Surface(
+                    .fillMaxWidth()
+                    .height(400.dp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                shape = RoundedCornerShape(size = PADDING_LARGE),
+            ) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(15.dp)
-                        .alpha(alpha = alphaAnim),
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(PADDING_SMALL),
-                ) {}
-                Spacer(modifier = Modifier.padding(PADDING_SMALL))
-            }
-            Row(modifier = Modifier.fillMaxWidth()) {
-                repeat(5) {
+                        .fillMaxSize()
+                        .padding(PADDING_MEDIUM),
+                    verticalArrangement = Arrangement.Bottom,
+                ) {
                     Surface(
                         modifier = Modifier
-                            .size(20.dp)
+                            .fillMaxWidth(0.5f)
+                            .height(30.dp)
                             .alpha(alpha = alphaAnim),
                         color = MaterialTheme.colorScheme.surface,
                         shape = RoundedCornerShape(PADDING_SMALL),
+
                     ) {}
-                    Spacer(modifier = Modifier.padding(PADDING_XSMALL))
+                    Spacer(modifier = Modifier.padding(PADDING_MEDIUM))
+                    repeat(3) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(15.dp)
+                                .alpha(alpha = alphaAnim),
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = RoundedCornerShape(PADDING_SMALL),
+                        ) {}
+                        Spacer(modifier = Modifier.padding(PADDING_SMALL))
+                    }
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        repeat(5) {
+                            Surface(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .alpha(alpha = alphaAnim),
+                                color = MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(PADDING_SMALL),
+                            ) {}
+                            Spacer(modifier = Modifier.padding(4.dp))
+                        }
+                    }
                 }
             }
         }
