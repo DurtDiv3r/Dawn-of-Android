@@ -5,9 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.islaharper.dawnofandroid.data.local.dao.AndroidFlavourDao
+import com.islaharper.dawnofandroid.data.local.dao.RemoteKeysDao
 import com.islaharper.dawnofandroid.domain.model.Flavour
+import com.islaharper.dawnofandroid.domain.model.RemoteKeys
 
-@Database(entities = [Flavour::class], version = 1)
+@Database(entities = [Flavour::class, RemoteKeys::class], version = 1)
 abstract class AndroidFlavourDb : RoomDatabase() {
 
     companion object {
@@ -25,4 +27,5 @@ abstract class AndroidFlavourDb : RoomDatabase() {
     }
 
     abstract fun androidFlavourDao(): AndroidFlavourDao
+    abstract fun remoteKeysDao(): RemoteKeysDao
 }
