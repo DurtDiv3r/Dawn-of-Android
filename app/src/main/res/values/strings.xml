@@ -22,4 +22,5 @@
     <string name="dynamic_theme">Dynamic Theme</string>
     <string name="open_options">Open options</string>
     <string name="find_a_flavour">Find a flavour</string>
+    <string name="placeholder_image_description">Placeholder image</string>
 </resources>
